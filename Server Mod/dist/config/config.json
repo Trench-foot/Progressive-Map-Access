@@ -1,0 +1,80 @@
+{
+  "enabled": true,
+
+  "ExampleMapConfiguration": {
+    "lockedByDefault": true,
+    "questID": "657315df034d76585f032e01",
+    "requireQuestStartedOnlyPickOne": false,
+    "requipreQuestCompletedOnlyPickOne": true
+  },
+  
+  "GroundZero": {
+    "lockedByDefault": false,
+    "questID": "657315df034d76585f032e01",
+    "requireQuestStarted": true,
+    "requireQuestCompleted": false
+  },
+
+  "Customs": {
+    "lockedByDefault": true,
+    "questID": "5936da9e86f7742d65037edf",
+    "requireQuestStarted": true,
+    "requireQuestCompleted": false
+  },
+
+  "Factory": {
+    "lockedByDefault": true,
+    "questID": "596b455186f77457cb50eccb",
+    "requireQuestStarted": false,
+    "requireQuestCompleted": true
+  },
+
+  "Woods": {
+    "lockedByDefault": true,
+    "questID": "5d2495a886f77425cd51e403",
+    "requireQuestStarted": true,
+    "requireQuestCompleted": false
+  },
+
+  "Interchange": {
+    "lockedByDefault": true,
+    "questID": "5ae448bf86f7744d733e55ee",
+    "requireQuestStarted": true,
+    "requireQuestCompleted": false
+  },
+
+  "Streets": {
+    "lockedByDefault": true,
+    "questID": "5a27c99a86f7747d2c6bdd8e",
+    "requireQuestStarted": false,
+    "requireQuestCompleted": true
+  },
+
+  "Shoreline": {
+    "lockedByDefault": true,
+    "questID": "5a27b75b86f7742e97191958",
+    "requireQuestStarted": true,
+    "requireQuestCompleted": false
+  },
+
+  "Lighthouse": {
+    "lockedByDefault": true,
+    "questID": "626bd75e47ea7f506e5493c5",
+    "requireQuestStarted": true,
+    "requireQuestCompleted": false
+  },
+
+  "Reserve": {
+    "lockedByDefault": true,
+    "questID": "59c50a9e86f7745fef66f4ff",
+    "requireQuestStarted": false,
+    "requireQuestCompleted": true
+  },
+
+  "Labs": {
+    "lockedByDefault": true,
+    "questID": "5d25e4b786f77408251c4bfc",
+    "requireQuestStarted": false,
+    "requireQuestCompleted": true
+  }
+}
