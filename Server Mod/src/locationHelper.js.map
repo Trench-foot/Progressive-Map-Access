@@ -1,0 +1,10 @@
+{
+    "version": 3,
+    "file": "locationHelper.js",
+    "sourceRoot": "",
+    "sources": [
+        "locationHelper.ts"
+    ],
+    "names": [],
+    "mappings": ";;;AACa,QAAA,cAAc,GAC3B;IACI,SAAS;IACT,cAAc;IACd,QAAQ;IACR,cAAc;IACd,gBAAgB;IAChB,OAAO;IACP,aAAa;IACb,WAAW;IACX,YAAY;IACZ,YAAY;IACZ,eAAe;IACf,YAAY;IACZ,SAAS;CACZ,CAAA"
+}

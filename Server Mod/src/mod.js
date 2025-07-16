@@ -5,8 +5,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.mod = void 0;
 const QuestStatus_1 = require("C:/snapshot/project/obj/models/enums/QuestStatus");
+const locationHelper_1 = require("./locationHelper");
 const path_1 = __importDefault(require("path"));
 const fs_1 = __importDefault(require("fs"));
+//import { server } from "C:/snapshot/project/node_modules/typescript";
 class ProgressiveMapAccess {
     logger;
     databaseServer;
@@ -14,6 +16,7 @@ class ProgressiveMapAccess {
     tables;
     modConfig = require("../config/config.json");
     enableLogging = true;
+    matchResults;
     groundZero;
     groundZeroHigh;
     customs;
@@ -57,6 +60,56 @@ class ProgressiveMapAccess {
                     }
                 },
                 {
+                    // update on client game start
+                    url: "/client/game/profile/create",
+                    action: async (url, info, sessionId, output) => {
+                        const currentProfile = this.profileHelper.getPmcProfile(sessionId);
+                        if (this.enableLogging) {
+                            this.logger.log("Creating profile, /client/game/profile/create", "yellow");
+                        }
+                        this.createUserProfile(currentProfile);
+                        return output;
+                    }
+                },
+                {
+                    // update on quest completion, this is a double check as sometimes the user profile gets
+                    // updated before the actual process of checking quest progress
+                    url: "/client/game/profile/items/moving",
+                    action: async (url, info, sessionId, output) => {
+                        const currentProfile = this.profileHelper.getPmcProfile(sessionId);
+                        if (this.enableLogging) {
+                            this.logger.log("Checking quest progress, /client/game/profile/items/moving", "yellow");
+                        }
+                        this.updateQuestProgression(currentProfile);
+                        return output;
+                    }
+                },
+                {
+                    // update on quest completion, this is a double check as sometimes the user profile gets
+                    // updated before the actual process of checking quest progress
+                    url: "/client/mail/dialog/info",
+                    action: async (url, info, sessionId, output) => {
+                        const currentProfile = this.profileHelper.getPmcProfile(sessionId);
+                        if (this.enableLogging) {
+                            this.logger.log("Checking quest progress, /client/mail/dialog/info", "yellow");
+                        }
+                        this.updateMapAccess(currentProfile);
+                        return output;
+                    }
+                },
+                {
+                    // update on client updating locations
+                    url: "/client/locations",
+                    action: async (url, info, sessionId, output) => {
+                        const currentProfile = this.profileHelper.getPmcProfile(sessionId);
+                        this.updateMapAccess(currentProfile);
+                        if (this.enableLogging) {
+                            this.logger.log("[PMA] Checking map updates", "yellow");
+                        }
+                        return output;
+                    }
+                },
+                {
                     // back up update call, this is useful if the player deleted there profile and doesn't
                     // have quests to accept to force the mod to check there access
                     url: "/client/survey/view",
@@ -71,38 +124,18 @@ class ProgressiveMapAccess {
                     }
                 },
                 {
-                    // update on quest completion
-                    url: "/client/mail/dialog/info",
+                    // back up update call, this is useful if the player deleted there profile and doesn't
+                    // have quests to accept to force the mod to check there access
+                    url: "/client/match/local/end",
                     action: async (url, info, sessionId, output) => {
                         const currentProfile = this.profileHelper.getPmcProfile(sessionId);
-                        if (this.enableLogging) {
-                            this.logger.log("Checking quest progress, /client/mail/dialog/info", "yellow");
-                        }
-                        this.updateMapAccess(currentProfile);
-                        return output;
-                    }
-                },
-                {
-                    // update on quest completion
-                    url: "/client/game/profile/items/moving",
-                    action: async (url, info, sessionId, output) => {
-                        const currentProfile = this.profileHelper.getPmcProfile(sessionId);
-                        if (this.enableLogging) {
-                            this.logger.log("Checking quest progress, /client/game/profile/items/moving", "yellow");
-                        }
-                        this.updateQuestProgression(currentProfile);
-                        return output;
-                    }
-                },
-                {
-                    // update on client updating locations
-                    url: "/client/locations",
-                    action: async (url, info, sessionId, output) => {
-                        const currentProfile = this.profileHelper.getPmcProfile(sessionId);
-                        this.updateMapAccess(currentProfile);
-                        if (this.enableLogging) {
-                            this.logger.log("[PMA] Checking map updates", "yellow");
-                        }
+                        this.matchResults = info;
+                        this.logger.log(this.matchResults, "yellow");
+                        this.writeRaidStatusJsonFile(currentProfile, this.matchResults);
+                        // if (this.enableLogging)
+                        // {
+                        //     this.logger.log("Checking quest progress, /client/survey/view", "yellow");
+                        // }                       
                         return output;
                     }
                 }
@@ -147,17 +180,20 @@ class ProgressiveMapAccess {
     }
     // Updates map access based on information from created player profile
     updateMapAccess(pmcData) {
-        if (this.enableLogging) {
-            this.logger.log("Creating player profile", "white");
-        }
-        this.createUserProfile(pmcData);
-        const profilePath = this.dbPath + "/" + pmcData._id + ".json";
+        const profilePath = this.dbPath + "/" + pmcData._id + "/" + pmcData._id + ".json";
         const profile = this.readJsonFileSync(profilePath);
         if (profile === undefined || profile === null) {
+            if (this.enableLogging) {
+                this.logger.log("Creating player profile", "white");
+            }
+            this.createUserProfile(pmcData);
             if (this.enableLogging) {
                 this.logger.log("Profile undefined or null!  Returning.", "red");
             }
             return;
+        }
+        if (this.enableLogging) {
+            this.logger.log("UPDATING MAP TABLE!", "green");
         }
         this.groundZero.Locked = profile.Maps.groundZero;
         this.groundZeroHigh.Locked = profile.Maps.groundZero;
@@ -171,9 +207,87 @@ class ProgressiveMapAccess {
         this.lightHouse.Locked = profile.Maps.lightHouse;
         this.reserve.Locked = profile.Maps.reserve;
         this.labs.Locked = profile.Maps.labs;
-        if (this.enableLogging) {
-            this.logger.log("UPDATING MAP TABLE!", "green");
+        if (!this.checkPreviousRaidStatus(pmcData)) {
+            return;
         }
+    }
+    checkPreviousRaidStatus(pmcData) {
+        const raidResultsPath = this.dbPath + "/" + pmcData._id + "/" + "lastRaidResults.json";
+        const raid = this.readJsonFileSync(raidResultsPath);
+        if (raid === undefined || raid === null) {
+            if (this.enableLogging) {
+                this.logger.log("Raid results undefined or null!  Returning.", "red");
+            }
+            return false;
+        }
+        const testSurvived = raid.RaidResult;
+        if (testSurvived.includes("Survived") || testSurvived.includes("Runner")) {
+            if (this.enableLogging) {
+                this.logger.log("Player had a status of survived or runner", "yellow");
+            }
+            const test = raid.MapId;
+            let locationResult;
+            if (this.enableLogging) {
+                this.logger.log("Testing " + test + " for matches.", "yellow");
+            }
+            for (const location in locationHelper_1.locationsArray) {
+                this.logger.log(locationHelper_1.locationsArray[location], "yellow");
+                if (test.includes(locationHelper_1.locationsArray[location])) {
+                    locationResult = locationHelper_1.locationsArray[location];
+                }
+            }
+            if (this.enableLogging) {
+                this.logger.log(locationResult + "found, setting matching bool", "yellow");
+            }
+            switch (locationResult) {
+                case "Sandbox":
+                    this.groundZero.Locked = false;
+                    break;
+                case "Sandbox_high":
+                    this.groundZeroHigh.Locked = false;
+                    break;
+                case "bigmap":
+                    this.customs.Locked = false;
+                    break;
+                case "factory4_day":
+                    this.factoryDay.Locked = false, this.factoryNight.Locked = false;
+                    break;
+                case "factory4_night":
+                    this.factoryDay.Locked = false, this.factoryNight.Locked = false;
+                    break;
+                case "Woods":
+                    this.woods.Locked = false;
+                    break;
+                case "Interchange":
+                    this.interChange.Locked = false;
+                    break;
+                case "Shoreline":
+                    this.shoreLine.Locked = false;
+                    break;
+                case "RezervBase":
+                    this.reserve.Locked = false;
+                    break;
+                case "Lighthouse":
+                    this.lightHouse.Locked = false;
+                    break;
+                case "TarkovStreets":
+                    this.streets.Locked = false;
+                    break;
+                case "laboratory":
+                    this.labs.Locked = false;
+                    break;
+                default:
+                    if (this.enableLogging) {
+                        this.logger.log("No matches found for " + locationResult, "red");
+                    }
+                    return false;
+            }
+            if (this.enableLogging) {
+                this.logger.log("Operation complete " + locationResult + " should be open.", "green");
+            }
+            return true;
+        }
+        return false;
     }
     // Converts the modConfig map bool to a queststatus
     getQuestStatusRequirement(mapConfig) {
@@ -208,12 +322,12 @@ class ProgressiveMapAccess {
             this.lockMapsOnStart();
             return;
         }
-        // Just incase the user deletes there profiles for whatever reason,
-        // this will recreate them on login
-        this.createUserProfile(pmcData);
-        const profilePath = this.dbPath + "/" + pmcData._id + ".json";
+        const profilePath = this.dbPath + "/" + pmcData._id + "/" + pmcData._id + ".json";
         const profile = this.readJsonFileSync(profilePath);
         if (profile === undefined || profile === null) {
+            // Just incase the user deletes there profiles for whatever reason,
+            // this will recreate them on login
+            this.createUserProfile(pmcData);
             if (this.enableLogging) {
                 this.logger.log("Profile undefined or null!  Returning.", "red");
             }
@@ -386,6 +500,8 @@ class ProgressiveMapAccess {
             }
             return false;
         }
+        // Create the user fold incase it doesn't exist
+        this.creaateUserFolderSync(pmcData);
         // Profile settings match the default lock status of the modConfig
         const user = {
             userID: pmcData._id,
@@ -403,7 +519,7 @@ class ProgressiveMapAccess {
             }
         };
         const userJson = JSON.stringify(user, null, 2);
-        const filePath = this.dbPath + "/" + pmc + ".json";
+        const filePath = this.dbPath + "/" + pmc + "/" + pmc + ".json";
         fs_1.default.writeFile(filePath, userJson, { flag: "wx" }, (err) => {
             if (err) {
                 if (err.code === "EEXIST") {
@@ -431,7 +547,8 @@ class ProgressiveMapAccess {
     updateUserProfile(pmcData, data) {
         const pmc = pmcData._id;
         const userJson = JSON.stringify(data, null, 2);
-        const filePath = this.dbPath + "/" + pmc + ".json";
+        //const filePath = this.dbPath + "/" + pmc + ".json";
+        const filePath = this.dbPath + "/" + pmc + "/" + pmc + ".json";
         fs_1.default.writeFile(filePath, userJson, { flag: "r+" }, (err) => {
             if (err) {
                 if (this.enableLogging) {
@@ -444,6 +561,74 @@ class ProgressiveMapAccess {
                 }
             }
         });
+    }
+    // Creates and updates the users last raid status
+    writeRaidStatusJsonFile(pmcData, raidResult) {
+        const pmc = pmcData._id;
+        const serverID = raidResult.serverId;
+        // const results = raidResult.results.result;
+        // const exit = raidResult.results.exitName;
+        if (serverID.includes("Savage")) {
+            if (this.enableLogging) {
+                this.logger.log("Scav raid detected, skipping", "yellow");
+            }
+            return;
+        }
+        const user = {
+            MapId: raidResult.serverId,
+            RaidResult: raidResult.results.result,
+            Exit: raidResult.results.exitName
+        };
+        const userJson = JSON.stringify(user, null, 2);
+        const filePath = this.dbPath + "/" + pmc + "/" + "lastRaidResults.json";
+        fs_1.default.writeFile(filePath, userJson, (err) => {
+            if (err) {
+                if (err.code === "EEXIST") {
+                    if (this.enableLogging) {
+                        this.logger.log("File already exists.  No new file created.", "yellow");
+                    }
+                    return true;
+                }
+                else {
+                    if (this.enableLogging) {
+                        this.logger.log("Error writing file:" + err, "red");
+                    }
+                    return false;
+                }
+            }
+            else {
+                if (this.enableLogging) {
+                    this.logger.log("JSON file created successfully.", "green");
+                }
+                return true;
+            }
+        });
+    }
+    // Creates the new users folder if it doesn't exist
+    creaateUserFolderSync(pmcData) {
+        if (this.enableLogging) {
+            this.logger.log("Creating folder", "yellow");
+        }
+        const pmc = pmcData._id;
+        const filePath = this.dbPath + "/" + pmc;
+        try {
+            fs_1.default.mkdirSync(filePath, { recursive: true });
+            if (this.enableLogging) {
+                this.logger.log("Directory " + filePath + " created successfully (synchronously)!", "white");
+            }
+        }
+        catch (error) {
+            if (error.code === "EEXIST") {
+                if (this.enableLogging) {
+                    this.logger.log("Directory " + filePath + " already exists (synchronously).", "white");
+                }
+            }
+            else {
+                if (this.enableLogging) {
+                    this.logger.log("Error creating directory synchronously: " + filePath, "red");
+                }
+            }
+        }
     }
     // Read JSON files
     readJsonFileSync(filePath) {

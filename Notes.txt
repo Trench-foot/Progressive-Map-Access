@@ -1,0 +1,11 @@
+
+
+Unlock location temporarily on successful extract
+
+if (raidResult === "Survived" || raidResult === "Runner")
+{
+	if ()
+	{
+		
+	}
+}
