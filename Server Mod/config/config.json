@@ -1,5 +1,8 @@
 {
   "enabled": true,
+  "campingTrip": true,
+  "campingAdjacent": true,
+  "enableLogging": false,
 
   "ExampleMapConfiguration": {
     "lockedByDefault": true,
