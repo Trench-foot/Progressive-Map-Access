@@ -43,6 +43,10 @@ export class OffMapHelpers
      
             for (const location in this.locationInstance.locationsArray )
             {
+                if (this.enableLogging)
+                {
+                    this.logger.log(this.locationInstance.locationsArray[location].Id, "yellow");
+                }
                 if (test.includes(this.locationInstance.locationsArray[location]))
                 {
                     locationResult = this.locationInstance.locationsArray[location];
@@ -126,21 +130,6 @@ export class OffMapHelpers
 
     public checkMapAdjacence(test: string)
     {
-        if (this.enableLogging)
-        {
-            this.logger.log("Ground Zero" + this.locationInstance.groundZero.Locked, "green");
-            this.logger.log("Ground Zero High" + this.locationInstance.groundZeroHigh.Locked, "green");
-            this.logger.log("Customs" + this.locationInstance.customs.Locked, "green");
-            this.logger.log("Factory Day" + this.locationInstance.factoryDay.Locked, "green");
-            this.logger.log("Factory Night" + this.locationInstance.factoryNight.Locked, "green");
-            this.logger.log("Woods" + this.locationInstance.woods.Locked, "green");
-            this.logger.log("Interchange" + this.locationInstance.interChange.Locked, "green");
-            this.logger.log("Streets" + this.locationInstance.streets.Locked, "green");
-            this.logger.log("Shoreline" + this.locationInstance.shoreLine.Locked, "green");
-            this.logger.log("Lighthouse" + this.locationInstance.lightHouse.Locked, "green");
-            this.logger.log("Reserve" + this.locationInstance.reserve.Locked, "green");
-            this.logger.log("labs" + this.locationInstance.labs.Locked, "green");
-        }
         if (!this.modConfig.campingAdjacent)
         {
             return;
@@ -152,7 +141,7 @@ export class OffMapHelpers
                 {
                     if (this.enableLogging)
                     {
-                        this.logger.log("Extended camping trip to " + this.locationInstance.groundZeroAdjacent[location].Name, "yellow");
+                        this.logger.log("Extended camping trip to " + this.locationInstance.groundZeroAdjacent[location].Id, "yellow");
                     }
                     this.locationInstance.groundZeroAdjacent[location].Locked = false;
                 }
@@ -162,7 +151,7 @@ export class OffMapHelpers
                 {
                     if (this.enableLogging)
                     {
-                        this.logger.log("Extended camping trip to " + this.locationInstance.groundZeroAdjacent[location].Name, "yellow");
+                        this.logger.log("Extended camping trip to " + this.locationInstance.groundZeroAdjacent[location].Id, "yellow");
                     }
                     this.locationInstance.groundZeroAdjacent[location].Locked = false;
                 }
@@ -172,7 +161,7 @@ export class OffMapHelpers
                 {
                     if (this.enableLogging)
                     {
-                        this.logger.log("Extended camping trip to " + this.locationInstance.customsAdjacent[location].Name, "yellow");
+                        this.logger.log("Extended camping trip to " + this.locationInstance.customsAdjacent[location].Id, "yellow");
                     }
                     this.locationInstance.customsAdjacent[location].Locked = false;
                 }
@@ -182,7 +171,7 @@ export class OffMapHelpers
                 {
                     if (this.enableLogging)
                     {
-                        this.logger.log("Extended camping trip to " + this.locationInstance.factoryAdjacent[location].Name, "yellow");
+                        this.logger.log("Extended camping trip to " + this.locationInstance.factoryAdjacent[location].Id, "yellow");
                     }
                     this.locationInstance.factoryAdjacent[location].Locked = false;
                 }
@@ -192,7 +181,7 @@ export class OffMapHelpers
                 {
                     if (this.enableLogging)
                     {
-                        this.logger.log("Extended camping trip to " + this.locationInstance.factoryAdjacent[location].Name, "yellow");
+                        this.logger.log("Extended camping trip to " + this.locationInstance.factoryAdjacent[location].Id, "yellow");
                     }
                     this.locationInstance.factoryAdjacent[location].Locked = false;
                 }
@@ -202,7 +191,7 @@ export class OffMapHelpers
                 {
                     if (this.enableLogging)
                     {
-                        this.logger.log("Extended camping trip to " + this.locationInstance.woodsAdjacent[location].Name, "yellow");
+                        this.logger.log("Extended camping trip to " + this.locationInstance.woodsAdjacent[location].Id, "yellow");
                     }
                     this.locationInstance.woodsAdjacent[location].Locked = false;
                 }
@@ -212,7 +201,7 @@ export class OffMapHelpers
                 {
                     if (this.enableLogging)
                     {
-                        this.logger.log("Extended camping trip to " + this.locationInstance.interChangeAdjacent[location].Name, "yellow");
+                        this.logger.log("Extended camping trip to " + this.locationInstance.interChangeAdjacent[location].Id, "yellow");
                     }
                     this.locationInstance.interChangeAdjacent[location].Locked = false;
                 }
@@ -222,7 +211,7 @@ export class OffMapHelpers
                 {
                     if (this.enableLogging)
                     {
-                        this.logger.log("Extended camping trip to " + this.locationInstance.shoreLineAdjacent[location].Name, "yellow");
+                        this.logger.log("Extended camping trip to " + this.locationInstance.shoreLineAdjacent[location].Id, "yellow");
                     }
                     this.locationInstance.shoreLineAdjacent[location].Locked = false;
                 }
@@ -232,7 +221,7 @@ export class OffMapHelpers
                 {
                     if (this.enableLogging)
                     {
-                        this.logger.log("Extended camping trip to " + this.locationInstance.reserveAdjacent[location].Name, "yellow");
+                        this.logger.log("Extended camping trip to " + this.locationInstance.reserveAdjacent[location].Id, "yellow");
                     }
                     this.locationInstance.reserveAdjacent[location].Locked = false;
                 }
@@ -242,7 +231,7 @@ export class OffMapHelpers
                 {
                     if (this.enableLogging)
                     {
-                        this.logger.log("Extended camping trip to " + this.locationInstance.lightHouseAdjacent[location].Name, "yellow");
+                        this.logger.log("Extended camping trip to " + this.locationInstance.lightHouseAdjacent[location].Id, "yellow");
                     }
                     this.locationInstance.lightHouseAdjacent[location].Locked = false;
                 }
@@ -252,7 +241,7 @@ export class OffMapHelpers
                 {
                     if (this.enableLogging)
                     {
-                        this.logger.log("Extended camping trip to " + this.locationInstance.streetsAdjacent[location].Name, "yellow");
+                        this.logger.log("Extended camping trip to " + this.locationInstance.streetsAdjacent[location].Id, "yellow");
                     }
                     this.locationInstance.streetsAdjacent[location].Locked = false;
                 }
@@ -262,7 +251,7 @@ export class OffMapHelpers
                 {
                     if (this.enableLogging)
                     {
-                        this.logger.log("Extended camping trip to " + this.locationInstance.labsAdjacent[location].Name, "yellow");
+                        this.logger.log("Extended camping trip to " + this.locationInstance.labsAdjacent[location].Id, "yellow");
                     }
                     this.locationInstance.labsAdjacent[location].Locked = false;
                 }

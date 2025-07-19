@@ -30,9 +30,6 @@ class OffMapHelpers {
                 this.logger.log("Testing " + test + " for matches.", "yellow");
             }
             for (const location in this.locationInstance.locationsArray) {
-                if (this.enableLogging) {
-                    this.logger.log(this.locationInstance.locationsArray[location].Id, "yellow");
-                }
                 if (test.includes(this.locationInstance.locationsArray[location])) {
                     locationResult = this.locationInstance.locationsArray[location];
                 }
@@ -108,6 +105,20 @@ class OffMapHelpers {
         return false;
     }
     checkMapAdjacence(test) {
+        if (this.enableLogging) {
+            this.logger.log("Ground Zero" + this.locationInstance.groundZero.Locked, "green");
+            this.logger.log("Ground Zero High" + this.locationInstance.groundZeroHigh.Locked, "green");
+            this.logger.log("Customs" + this.locationInstance.customs.Locked, "green");
+            this.logger.log("Factory Day" + this.locationInstance.factoryDay.Locked, "green");
+            this.logger.log("Factory Night" + this.locationInstance.factoryNight.Locked, "green");
+            this.logger.log("Woods" + this.locationInstance.woods.Locked, "green");
+            this.logger.log("Interchange" + this.locationInstance.interChange.Locked, "green");
+            this.logger.log("Streets" + this.locationInstance.streets.Locked, "green");
+            this.logger.log("Shoreline" + this.locationInstance.shoreLine.Locked, "green");
+            this.logger.log("Lighthouse" + this.locationInstance.lightHouse.Locked, "green");
+            this.logger.log("Reserve" + this.locationInstance.reserve.Locked, "green");
+            this.logger.log("labs" + this.locationInstance.labs.Locked, "green");
+        }
         if (!this.modConfig.campingAdjacent) {
             return;
         }
@@ -115,7 +126,7 @@ class OffMapHelpers {
             case "Sandbox":
                 for (const location in this.locationInstance.groundZeroAdjacent) {
                     if (this.enableLogging) {
-                        this.logger.log("Extended camping trip to " + this.locationInstance.groundZeroAdjacent[location].Id, "yellow");
+                        this.logger.log("Extended camping trip to " + this.locationInstance.groundZeroAdjacent[location].Name, "yellow");
                     }
                     this.locationInstance.groundZeroAdjacent[location].Locked = false;
                 }
@@ -123,7 +134,7 @@ class OffMapHelpers {
             case "Sandbox_high":
                 for (const location in this.locationInstance.groundZeroAdjacent) {
                     if (this.enableLogging) {
-                        this.logger.log("Extended camping trip to " + this.locationInstance.groundZeroAdjacent[location].Id, "yellow");
+                        this.logger.log("Extended camping trip to " + this.locationInstance.groundZeroAdjacent[location].Name, "yellow");
                     }
                     this.locationInstance.groundZeroAdjacent[location].Locked = false;
                 }
@@ -131,7 +142,7 @@ class OffMapHelpers {
             case "bigmap":
                 for (const location in this.locationInstance.customsAdjacent) {
                     if (this.enableLogging) {
-                        this.logger.log("Extended camping trip to " + this.locationInstance.customsAdjacent[location].Id, "yellow");
+                        this.logger.log("Extended camping trip to " + this.locationInstance.customsAdjacent[location].Name, "yellow");
                     }
                     this.locationInstance.customsAdjacent[location].Locked = false;
                 }
@@ -139,7 +150,7 @@ class OffMapHelpers {
             case "factory4_day":
                 for (const location in this.locationInstance.factoryAdjacent) {
                     if (this.enableLogging) {
-                        this.logger.log("Extended camping trip to " + this.locationInstance.factoryAdjacent[location].Id, "yellow");
+                        this.logger.log("Extended camping trip to " + this.locationInstance.factoryAdjacent[location].Name, "yellow");
                     }
                     this.locationInstance.factoryAdjacent[location].Locked = false;
                 }
@@ -147,7 +158,7 @@ class OffMapHelpers {
             case "factory4_night":
                 for (const location in this.locationInstance.factoryAdjacent) {
                     if (this.enableLogging) {
-                        this.logger.log("Extended camping trip to " + this.locationInstance.factoryAdjacent[location].Id, "yellow");
+                        this.logger.log("Extended camping trip to " + this.locationInstance.factoryAdjacent[location].Name, "yellow");
                     }
                     this.locationInstance.factoryAdjacent[location].Locked = false;
                 }
@@ -155,7 +166,7 @@ class OffMapHelpers {
             case "Woods":
                 for (const location in this.locationInstance.woodsAdjacent) {
                     if (this.enableLogging) {
-                        this.logger.log("Extended camping trip to " + this.locationInstance.woodsAdjacent[location].Id, "yellow");
+                        this.logger.log("Extended camping trip to " + this.locationInstance.woodsAdjacent[location].Name, "yellow");
                     }
                     this.locationInstance.woodsAdjacent[location].Locked = false;
                 }
@@ -163,7 +174,7 @@ class OffMapHelpers {
             case "Interchange":
                 for (const location in this.locationInstance.interChangeAdjacent) {
                     if (this.enableLogging) {
-                        this.logger.log("Extended camping trip to " + this.locationInstance.interChangeAdjacent[location].Id, "yellow");
+                        this.logger.log("Extended camping trip to " + this.locationInstance.interChangeAdjacent[location].Name, "yellow");
                     }
                     this.locationInstance.interChangeAdjacent[location].Locked = false;
                 }
@@ -171,7 +182,7 @@ class OffMapHelpers {
             case "Shoreline":
                 for (const location in this.locationInstance.shoreLineAdjacent) {
                     if (this.enableLogging) {
-                        this.logger.log("Extended camping trip to " + this.locationInstance.shoreLineAdjacent[location].Id, "yellow");
+                        this.logger.log("Extended camping trip to " + this.locationInstance.shoreLineAdjacent[location].Name, "yellow");
                     }
                     this.locationInstance.shoreLineAdjacent[location].Locked = false;
                 }
@@ -179,7 +190,7 @@ class OffMapHelpers {
             case "RezervBase":
                 for (const location in this.locationInstance.reserveAdjacent) {
                     if (this.enableLogging) {
-                        this.logger.log("Extended camping trip to " + this.locationInstance.reserveAdjacent[location].Id, "yellow");
+                        this.logger.log("Extended camping trip to " + this.locationInstance.reserveAdjacent[location].Name, "yellow");
                     }
                     this.locationInstance.reserveAdjacent[location].Locked = false;
                 }
@@ -187,7 +198,7 @@ class OffMapHelpers {
             case "Lighthouse":
                 for (const location in this.locationInstance.lightHouseAdjacent) {
                     if (this.enableLogging) {
-                        this.logger.log("Extended camping trip to " + this.locationInstance.lightHouseAdjacent[location].Id, "yellow");
+                        this.logger.log("Extended camping trip to " + this.locationInstance.lightHouseAdjacent[location].Name, "yellow");
                     }
                     this.locationInstance.lightHouseAdjacent[location].Locked = false;
                 }
@@ -195,7 +206,7 @@ class OffMapHelpers {
             case "TarkovStreets":
                 for (const location in this.locationInstance.streetsAdjacent) {
                     if (this.enableLogging) {
-                        this.logger.log("Extended camping trip to " + this.locationInstance.streetsAdjacent[location].Id, "yellow");
+                        this.logger.log("Extended camping trip to " + this.locationInstance.streetsAdjacent[location].Name, "yellow");
                     }
                     this.locationInstance.streetsAdjacent[location].Locked = false;
                 }
@@ -203,7 +214,7 @@ class OffMapHelpers {
             case "laboratory":
                 for (const location in this.locationInstance.labsAdjacent) {
                     if (this.enableLogging) {
-                        this.logger.log("Extended camping trip to " + this.locationInstance.labsAdjacent[location].Id, "yellow");
+                        this.logger.log("Extended camping trip to " + this.locationInstance.labsAdjacent[location].Name, "yellow");
                     }
                     this.locationInstance.labsAdjacent[location].Locked = false;
                 }

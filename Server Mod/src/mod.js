@@ -94,10 +94,14 @@ class ProgressiveMapAccess {
                     url: "/client/mail/dialog/info",
                     action: async (url, info, sessionId, output) => {
                         const currentProfile = this.profileHelper.getPmcProfile(sessionId);
+                        this.updateQuestProgression(currentProfile);
                         if (this.enableLogging) {
                             this.logger.log("Checking quest progress, /client/mail/dialog/info", "yellow");
                         }
-                        this.updateMapAccess(currentProfile);
+                        const test = this.updateMapsWait(currentProfile);
+                        if (this.enableLogging) {
+                            this.logger.log("Map update returned: " + test, "white");
+                        }
                         return output;
                     }
                 },
@@ -106,7 +110,10 @@ class ProgressiveMapAccess {
                     url: "/client/locations",
                     action: async (url, info, sessionId, output) => {
                         const currentProfile = this.profileHelper.getPmcProfile(sessionId);
-                        this.updateMapAccess(currentProfile);
+                        const test = this.updateMapsWait(currentProfile);
+                        if (this.enableLogging) {
+                            this.logger.log("Map update returned: " + test, "white");
+                        }
                         if (this.enableLogging) {
                             this.logger.log("[PMA] Checking map updates", "yellow");
                         }
@@ -123,7 +130,10 @@ class ProgressiveMapAccess {
                             this.logger.log("Checking quest progress, /client/survey/view", "yellow");
                         }
                         this.updateQuestProgression(currentProfile);
-                        this.updateMapAccess(currentProfile);
+                        const test = this.updateMapsWait(currentProfile);
+                        if (this.enableLogging) {
+                            this.logger.log("Map update returned: " + test, "white");
+                        }
                         return output;
                     }
                 },
@@ -180,8 +190,50 @@ class ProgressiveMapAccess {
         this.locationInstance.reserve.Locked = this.modConfig.Reserve.lockedByDefault;
         this.locationInstance.labs.Locked = this.modConfig.Labs.lockedByDefault;
     }
+    // Function to try and make the game wait for for both location checks
+    updateMapsWait(pmcData) {
+        if (this.updateQuestMapAccess(pmcData)) {
+            if (this.enableLogging) {
+                this.logger.log("Map update completed", "green");
+            }
+            if (this.offMapInstance.checkPreviousRaidStatus(pmcData)) {
+                if (this.enableLogging) {
+                    this.logger.log("Camping update complete", "yellow");
+                }
+                return true;
+            }
+            else {
+                if (this.enableLogging) {
+                    this.logger.log("Camping update not complete", "yellow");
+                }
+                return false;
+            }
+        }
+        else {
+            if (this.enableLogging) {
+                this.logger.log("Update not complete", "green");
+            }
+            // if (this.offMapInstance.checkPreviousRaidStatus(pmcData))
+            // {
+            //     if (this.enableLogging)
+            //     {
+            //         this.logger.log("Update complete", "yellow");               
+            //     }
+            //     return true;
+            // }
+            // else
+            // {
+            //     if (this.enableLogging)
+            //     {
+            //         this.logger.log("Update not complete", "yellow");                
+            //     }
+            //     return false;
+            // }
+            return false;
+        }
+    }
     // Updates map access based on information from created player profile
-    updateMapAccess(pmcData) {
+    updateQuestMapAccess(pmcData) {
         const profilePath = this.accountInstance.dbPath + "/" + pmcData._id + "/" + pmcData._id + ".json";
         const profile = this.accountInstance.readJsonFileSync(profilePath);
         if (profile === undefined || profile === null) {
@@ -192,7 +244,7 @@ class ProgressiveMapAccess {
             if (this.enableLogging) {
                 this.logger.log("Profile undefined or null!  Returning.", "red");
             }
-            return;
+            return false;
         }
         if (this.enableLogging) {
             this.logger.log("UPDATING MAP TABLE!", "green");
@@ -210,14 +262,12 @@ class ProgressiveMapAccess {
         this.locationInstance.reserve.Locked = profile.Maps.reserve;
         this.locationInstance.labs.Locked = profile.Maps.labs;
         if (profile.allMapsUnlocked) {
+            return false;
             if (this.enableLogging) {
                 this.logger.log("[PMA] Profile has unlocked all maps, congratulations", "yellow");
             }
-            return;
         }
-        if (!this.offMapInstance.checkPreviousRaidStatus(pmcData)) {
-            return;
-        }
+        return true;
     }
     // Compairs pmc quest status with the requirements for unlock
     updateQuestProgression(pmcData) {
@@ -407,7 +457,7 @@ class ProgressiveMapAccess {
             this.logger.log("Writing new profile data.", "yellow");
         }
         // Update make access after update
-        this.updateMapAccess(pmcData);
+        this.updateQuestMapAccess(pmcData);
         return;
     }
     // Converts the modConfig map bool to a queststatus

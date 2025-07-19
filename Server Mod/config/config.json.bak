@@ -26,7 +26,7 @@
   },
 
   "Factory": {
-    "lockedByDefault": true,
+    "lockedByDefault": false,
     "questID": "596b455186f77457cb50eccb",
     "requireQuestStarted": false,
     "requireQuestCompleted": true

@@ -1,8 +1,8 @@
 {
   "enabled": true,
   "campingTrip": true,
-  "campingAdjacent": true,
-  "enableLogging": false,
+  "campingAdjacent": false,
+  "enableLogging": true,
 
   "ExampleMapConfiguration": {
     "lockedByDefault": true,
@@ -21,34 +21,34 @@
   "Customs": {
     "lockedByDefault": true,
     "questID": "5936da9e86f7742d65037edf",
-    "requireQuestStarted": true,
-    "requireQuestCompleted": false
+    "requireQuestStarted": false,
+    "requireQuestCompleted": true
   },
 
   "Factory": {
-    "lockedByDefault": true,
-    "questID": "596b455186f77457cb50eccb",
+    "lockedByDefault": false,
+    "questID": "5ac3477486f7741d651d6885",
     "requireQuestStarted": false,
     "requireQuestCompleted": true
   },
 
   "Woods": {
     "lockedByDefault": true,
-    "questID": "5d2495a886f77425cd51e403",
-    "requireQuestStarted": true,
-    "requireQuestCompleted": false
+    "questID": "5fd9fad9c1ce6b1a3b486d00",
+    "requireQuestStarted": false,
+    "requireQuestCompleted": true
   },
 
   "Interchange": {
     "lockedByDefault": true,
-    "questID": "5ae448bf86f7744d733e55ee",
-    "requireQuestStarted": true,
-    "requireQuestCompleted": false
+    "questID": "5ae448e586f7744dcf0c2a67",
+    "requireQuestStarted": false,
+    "requireQuestCompleted": true
   },
 
   "Streets": {
     "lockedByDefault": true,
-    "questID": "5a27c99a86f7747d2c6bdd8e",
+    "questID": "639136e84ed9512be67647db",
     "requireQuestStarted": false,
     "requireQuestCompleted": true
   },
@@ -56,27 +56,27 @@
   "Shoreline": {
     "lockedByDefault": true,
     "questID": "5a27b75b86f7742e97191958",
-    "requireQuestStarted": true,
-    "requireQuestCompleted": false
+    "requireQuestStarted": false,
+    "requireQuestCompleted": true
   },
 
   "Lighthouse": {
     "lockedByDefault": true,
-    "questID": "626bd75e47ea7f506e5493c5",
-    "requireQuestStarted": true,
-    "requireQuestCompleted": false
+    "questID": "6193850f60b34236ee0483de",
+    "requireQuestStarted": false,
+    "requireQuestCompleted": true
   },
 
   "Reserve": {
     "lockedByDefault": true,
-    "questID": "59c50a9e86f7745fef66f4ff",
+    "questID": "60896e28e4a85c72ef3fa301",
     "requireQuestStarted": false,
     "requireQuestCompleted": true
   },
 
   "Labs": {
     "lockedByDefault": true,
-    "questID": "5d25e4b786f77408251c4bfc",
+    "questID": "66aba85403e0ee3101042877",
     "requireQuestStarted": false,
     "requireQuestCompleted": true
   }
