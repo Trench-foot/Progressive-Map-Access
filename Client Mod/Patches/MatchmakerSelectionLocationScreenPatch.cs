@@ -26,6 +26,8 @@ public class MatchMakerSideSelectionScreenPatch : ModulePatch
             Plugin.Instance.Log.LogInfo("MatchMakerSideSelectionScreen.Show called, setting up location selection screen.");
         }
         Plugin.Instance.class303_0.GetLevelSettings();
+        //Plugin.Instance.RequestConfigs();
+        Plugin.Instance.mapUpdated = false;
         return true;
     }
 }
@@ -48,7 +50,8 @@ public class MatchMakerMapPointsScreenPatch : ModulePatch
             Plugin.Instance.Log.LogInfo("MatchMakerMapPointsScreen.method_5 called.");
         }
 
-        Plugin.UiMappings.setMapScreenMappings().SetActive(false);
+        // We are going to do something very different here
+        //Plugin.UiMappings.setMapScreenMappings().SetActive(false);
     }
 }
 
@@ -112,6 +115,6 @@ public class MatchMakerSelectLocationScreenPatch2 : ModulePatch
         }
         // Method to check to see if a map is currently locked, and if it is to disable the map button,
         // done in an effort to fix a bug that was present on live at the start of the Hardcore wipe
-        Plugin.UiMappings.setMapButtonAvailable(Plugin.UiMappings.labs);
+        Plugin.UiMappings.SetButtonAvailable(Plugin.UiMappings.labs, true);
     }
 }

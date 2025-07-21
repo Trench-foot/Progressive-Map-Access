@@ -16,6 +16,7 @@ class ProgressiveMapAccess {
     modConfig = require("../config/config.json");
     enableLogging = this.modConfig.enableLogging;
     matchResults;
+    modName = "Progressive Map Access";
     // private groundZero;
     // private groundZeroHigh;
     // private customs;
@@ -36,9 +37,10 @@ class ProgressiveMapAccess {
         this.tables = this.databaseServer.getTables();
         this.offMapInstance.accountInstance = this.accountInstance;
         this.offMapInstance.locationInstance = this.locationInstance;
+        this.accountInstance.locationInstance = this.locationInstance;
         if (this.modConfig.enabled) {
             // Lock maps on server startup
-            this.setMapMappings();
+            //this.setMapMappings();
             this.lockMapsOnStart();
             this.locationInstance.initializeArrays();
             this.logger.log("[PMA] Locking maps!", "yellow");
@@ -88,23 +90,26 @@ class ProgressiveMapAccess {
                         return output;
                     }
                 },
-                {
-                    // update on quest completion, this is a double check as sometimes the user profile gets
-                    // updated before the actual process of checking quest progress
-                    url: "/client/mail/dialog/info",
-                    action: async (url, info, sessionId, output) => {
-                        const currentProfile = this.profileHelper.getPmcProfile(sessionId);
-                        this.updateQuestProgression(currentProfile);
-                        if (this.enableLogging) {
-                            this.logger.log("Checking quest progress, /client/mail/dialog/info", "yellow");
-                        }
-                        const test = this.updateMapsWait(currentProfile);
-                        if (this.enableLogging) {
-                            this.logger.log("Map update returned: " + test, "white");
-                        }
-                        return output;
-                    }
-                },
+                // {
+                //     // update on quest completion, this is a double check as sometimes the user profile gets
+                //     // updated before the actual process of checking quest progress
+                //     url: "/client/mail/dialog/info",
+                //     action: async (url:string, info, sessionId:string, output:string) =>
+                //     {
+                //         const currentProfile : IPmcData = this.profileHelper.getPmcProfile(sessionId);   
+                //         this.updateQuestProgression(currentProfile);
+                //         if (this.enableLogging)
+                //         {
+                //             this.logger.log("Checking quest progress, /client/mail/dialog/info", "yellow");
+                //         }                       
+                //         const test = this.updateMapsWait(currentProfile);
+                //         if (this.enableLogging)
+                //         {
+                //             this.logger.log("Map update returned: " + test, "white");
+                //         }
+                //         return output;
+                //     }
+                // },
                 {
                     // update on client updating locations
                     url: "/client/locations",
@@ -152,6 +157,26 @@ class ProgressiveMapAccess {
                     }
                 }
             ], "spt");
+            staticRouterModService.registerStaticRouter(`StaticGetConfig${this.modName}`, [{
+                    url: "/ProgressiveMapAccess/UserProfile/",
+                    action: async (url, info, sessionId) => {
+                        const currentProfile = this.profileHelper.getPmcProfile(sessionId);
+                        const profilePath = this.accountInstance.dbPath + "/" + currentProfile._id + "/" + currentProfile._id + ".json";
+                        const profile = this.accountInstance.readJsonFileSync(profilePath);
+                        this.logger.log(currentProfile._id, "white");
+                        return JSON.stringify(profile);
+                    }
+                },
+                {
+                    url: "/ProgressiveMapAccess/UserRaidStatus/",
+                    action: async (url, info, sessionId) => {
+                        const currentProfile = this.profileHelper.getPmcProfile(sessionId);
+                        const profilePath = this.accountInstance.dbPath + "/" + currentProfile._id + "/" + "lastRaidResults.json";
+                        const profile = this.accountInstance.readJsonFileSync(profilePath);
+                        this.logger.log(currentProfile._id, "white");
+                        return JSON.stringify(profile);
+                    }
+                }], "GetConfig");
         }
     }
     // Maps the base files for all maps
@@ -177,18 +202,30 @@ class ProgressiveMapAccess {
         if (this.enableLogging) {
             this.logger.log("Locking map on startup", "white");
         }
-        this.locationInstance.groundZero.Locked = this.modConfig.GroundZero.lockedByDefault;
-        this.locationInstance.groundZeroHigh.Locked = this.modConfig.GroundZero.lockedByDefault;
-        this.locationInstance.customs.Locked = this.modConfig.Customs.lockedByDefault;
-        this.locationInstance.factoryDay.Locked = this.modConfig.Factory.lockedByDefault;
-        this.locationInstance.factoryNight.Locked = this.modConfig.Factory.lockedByDefault;
-        this.locationInstance.woods.Locked = this.modConfig.Woods.lockedByDefault;
-        this.locationInstance.interChange.Locked = this.modConfig.Interchange.lockedByDefault;
-        this.locationInstance.streets.Locked = this.modConfig.Streets.lockedByDefault;
-        this.locationInstance.shoreLine.Locked = this.modConfig.Shoreline.lockedByDefault;
-        this.locationInstance.lightHouse.Locked = this.modConfig.Lighthouse.lockedByDefault;
-        this.locationInstance.reserve.Locked = this.modConfig.Reserve.lockedByDefault;
-        this.locationInstance.labs.Locked = this.modConfig.Labs.lockedByDefault;
+        // this.locationInstance.groundZero.Locked = this.modConfig.GroundZero.lockedByDefault;
+        // this.locationInstance.groundZeroHigh.Locked = this.modConfig.GroundZero.lockedByDefault;
+        // this.locationInstance.customs.Locked = this.modConfig.Customs.lockedByDefault;
+        // this.locationInstance.factoryDay.Locked = this.modConfig.Factory.lockedByDefault;
+        // this.locationInstance.factoryNight.Locked = this.modConfig.Factory.lockedByDefault;
+        // this.locationInstance.woods.Locked = this.modConfig.Woods.lockedByDefault;
+        // this.locationInstance.interChange.Locked = this.modConfig.Interchange.lockedByDefault;
+        // this.locationInstance.streets.Locked = this.modConfig.Streets.lockedByDefault;
+        // this.locationInstance.shoreLine.Locked = this.modConfig.Shoreline.lockedByDefault;
+        // this.locationInstance.lightHouse.Locked = this.modConfig.Lighthouse.lockedByDefault;
+        // this.locationInstance.reserve.Locked = this.modConfig.Reserve.lockedByDefault;
+        // this.locationInstance.labs.Locked = this.modConfig.Labs.lockedByDefault;
+        this.tables.locations.sandbox.base.Locked = true;
+        this.tables.locations.sandbox_high.base.Locked = true;
+        this.tables.locations.bigmap.base.Locked = true;
+        this.tables.locations.factory4_day.base.Locked = true;
+        this.tables.locations.factory4_night.base.Locked = true;
+        this.tables.locations.woods.base.Locked = true;
+        this.tables.locations.interchange.base.Locked = true;
+        this.tables.locations.tarkovstreets.base.Locked = true;
+        this.tables.locations.shoreline.base.Locked = true;
+        this.tables.locations.lighthouse.base.Locked = true;
+        this.tables.locations.rezervbase.base.Locked = true;
+        this.tables.locations.laboratory.base.Locked = true;
     }
     // Function to try and make the game wait for for both location checks
     updateMapsWait(pmcData) {
@@ -249,18 +286,18 @@ class ProgressiveMapAccess {
         if (this.enableLogging) {
             this.logger.log("UPDATING MAP TABLE!", "green");
         }
-        this.locationInstance.groundZero.Locked = profile.Maps.groundZero;
-        this.locationInstance.groundZeroHigh.Locked = profile.Maps.groundZero;
-        this.locationInstance.customs.Locked = profile.Maps.customs;
-        this.locationInstance.factoryDay.Locked = profile.Maps.factory;
-        this.locationInstance.factoryNight.Locked = profile.Maps.factory;
-        this.locationInstance.woods.Locked = profile.Maps.woods;
-        this.locationInstance.interChange.Locked = profile.Maps.interChange;
-        this.locationInstance.streets.Locked = profile.Maps.streets;
-        this.locationInstance.shoreLine.Locked = profile.Maps.shoreLine;
-        this.locationInstance.lightHouse.Locked = profile.Maps.lightHouse;
-        this.locationInstance.reserve.Locked = profile.Maps.reserve;
-        this.locationInstance.labs.Locked = profile.Maps.labs;
+        this.locationInstance.groundZero = profile.Maps.groundZero;
+        this.locationInstance.groundZeroHigh = profile.Maps.groundZero;
+        this.locationInstance.customs = profile.Maps.customs;
+        this.locationInstance.factoryDay = profile.Maps.factory;
+        this.locationInstance.factoryNight = profile.Maps.factory;
+        this.locationInstance.woods = profile.Maps.woods;
+        this.locationInstance.interChange = profile.Maps.interChange;
+        this.locationInstance.streets = profile.Maps.streets;
+        this.locationInstance.shoreLine = profile.Maps.shoreLine;
+        this.locationInstance.lightHouse = profile.Maps.lightHouse;
+        this.locationInstance.reserve = profile.Maps.reserve;
+        this.locationInstance.labs = profile.Maps.labs;
         if (profile.allMapsUnlocked) {
             return false;
             if (this.enableLogging) {
@@ -311,11 +348,11 @@ class ProgressiveMapAccess {
         for (const quest of pmcData.Quests) {
             if (groundZeroBool && quest.qid === this.modConfig.GroundZero.questID) {
                 if (this.testBetweenNumbers(quest.status, this.getQuestStatusRequirement(this.modConfig.GroundZero), 4)) {
-                    this.locationInstance.groundZero.Locked = false;
-                    this.locationInstance.groundZeroHigh.Locked = false;
+                    this.locationInstance.groundZero = false;
+                    this.locationInstance.groundZeroHigh = false;
                     groundZeroBool = false;
                     if (this.enableLogging) {
-                        const test = this.locationInstance.groundZero.Locked;
+                        const test = this.locationInstance.groundZero;
                         this.logger.log(test, "yellow");
                         this.logger.log("[PMA] Ground Zero unlocked." + quest.qid + quest.status, "green");
                     }
@@ -323,10 +360,10 @@ class ProgressiveMapAccess {
             }
             if (customsBool && quest.qid === this.modConfig.Customs.questID) {
                 if (this.testBetweenNumbers(quest.status, this.getQuestStatusRequirement(this.modConfig.Customs), 4)) {
-                    this.locationInstance.customs.Locked = false;
+                    this.locationInstance.customs = false;
                     customsBool = false;
                     if (this.enableLogging) {
-                        const test = this.locationInstance.customs.Locked;
+                        const test = this.locationInstance.customs;
                         this.logger.log(test, "yellow");
                         this.logger.log("[PMA] Customs unlocked." + quest.qid + quest.status, "green");
                     }
@@ -334,11 +371,11 @@ class ProgressiveMapAccess {
             }
             if (factoryBool && quest.qid === this.modConfig.Factory.questID) {
                 if (this.testBetweenNumbers(quest.status, this.getQuestStatusRequirement(this.modConfig.Factory), 4)) {
-                    this.locationInstance.factoryDay.Locked = false;
-                    this.locationInstance.factoryNight.Locked = false;
+                    this.locationInstance.factoryDay = false;
+                    this.locationInstance.factoryNight = false;
                     factoryBool = false;
                     if (this.enableLogging) {
-                        const test = this.locationInstance.factoryDay.Locked;
+                        const test = this.locationInstance.factoryDay;
                         this.logger.log(test, "yellow");
                         this.logger.log("[PMA] Factory unlocked." + quest.qid + quest.status, "green");
                     }
@@ -346,10 +383,10 @@ class ProgressiveMapAccess {
             }
             if (woodsBool && quest.qid === this.modConfig.Woods.questID) {
                 if (this.testBetweenNumbers(quest.status, this.getQuestStatusRequirement(this.modConfig.Woods), 4)) {
-                    this.locationInstance.woods.Locked = false;
+                    this.locationInstance.woods = false;
                     woodsBool = false;
                     if (this.enableLogging) {
-                        const test = this.locationInstance.woods.Locked;
+                        const test = this.locationInstance.woods;
                         this.logger.log(test, "yellow");
                         this.logger.log("[PMA] Woods unlocked." + quest.qid + quest.status, "green");
                     }
@@ -357,10 +394,10 @@ class ProgressiveMapAccess {
             }
             if (interChangeBool && quest.qid === this.modConfig.Interchange.questID) {
                 if (this.testBetweenNumbers(quest.status, this.getQuestStatusRequirement(this.modConfig.Interchange), 4)) {
-                    this.locationInstance.interChange.Locked = false;
+                    this.locationInstance.interChange = false;
                     interChangeBool = false;
                     if (this.enableLogging) {
-                        const test = this.locationInstance.interChange.Locked;
+                        const test = this.locationInstance.interChange;
                         this.logger.log(test, "yellow");
                         this.logger.log("[PMA] Interchange unlocked." + quest.qid + quest.status, "green");
                     }
@@ -368,10 +405,10 @@ class ProgressiveMapAccess {
             }
             if (streetsBool && quest.qid === this.modConfig.Streets.questID) {
                 if (this.testBetweenNumbers(quest.status, this.getQuestStatusRequirement(this.modConfig.Streets), 4)) {
-                    this.locationInstance.streets.Locked = false;
+                    this.locationInstance.streets = false;
                     streetsBool = false;
                     if (this.enableLogging) {
-                        const test = this.locationInstance.streets.Locked;
+                        const test = this.locationInstance.streets;
                         this.logger.log(test, "yellow");
                         this.logger.log("[PMA] Streets unlocked." + quest.qid + quest.status, "green");
                     }
@@ -379,10 +416,10 @@ class ProgressiveMapAccess {
             }
             if (shoreLineBool && quest.qid === this.modConfig.Shoreline.questID) {
                 if (this.testBetweenNumbers(quest.status, this.getQuestStatusRequirement(this.modConfig.Shoreline), 4)) {
-                    this.locationInstance.shoreLine.Locked = false;
+                    this.locationInstance.shoreLine = false;
                     shoreLineBool = false;
                     if (this.enableLogging) {
-                        const test = this.locationInstance.shoreLine.Locked;
+                        const test = this.locationInstance.shoreLine;
                         this.logger.log(test, "yellow");
                         this.logger.log("[PMA] Shoreline unlocked." + quest.qid + quest.status, "green");
                     }
@@ -390,10 +427,10 @@ class ProgressiveMapAccess {
             }
             if (lightHouseBool && quest.qid === this.modConfig.Lighthouse.questID) {
                 if (this.testBetweenNumbers(quest.status, this.getQuestStatusRequirement(this.modConfig.Lighthouse), 4)) {
-                    this.locationInstance.lightHouse.Locked = false;
+                    this.locationInstance.lightHouse = false;
                     lightHouseBool = false;
                     if (this.enableLogging) {
-                        const test = this.locationInstance.lightHouse.Locked;
+                        const test = this.locationInstance.lightHouse;
                         this.logger.log(test, "yellow");
                         this.logger.log("[PMA] Lighthouse unlocked." + quest.qid + quest.status, "green");
                     }
@@ -401,10 +438,10 @@ class ProgressiveMapAccess {
             }
             if (reserveBool && quest.qid === this.modConfig.Reserve.questID) {
                 if (this.testBetweenNumbers(quest.status, this.getQuestStatusRequirement(this.modConfig.Reserve), 4)) {
-                    this.locationInstance.reserve.Locked = false;
+                    this.locationInstance.reserve = false;
                     reserveBool = false;
                     if (this.enableLogging) {
-                        const test = this.locationInstance.reserve.Locked;
+                        const test = this.locationInstance.reserve;
                         this.logger.log(test, "yellow");
                         this.logger.log("[PMA] Reserve unlocked." + quest.qid + quest.status, "green");
                     }
@@ -412,10 +449,10 @@ class ProgressiveMapAccess {
             }
             if (labsBool && quest.qid === this.modConfig.Labs.questID) {
                 if (this.testBetweenNumbers(quest.status, this.getQuestStatusRequirement(this.modConfig.Labs), 4)) {
-                    this.locationInstance.labs.Locked = false;
+                    this.locationInstance.labs = false;
                     labsBool = false;
                     if (this.enableLogging) {
-                        const test = this.locationInstance.labs.Locked;
+                        const test = this.locationInstance.labs;
                         this.logger.log(test, "yellow");
                         this.logger.log("[PMA] Laboratory unlocked." + quest.qid + quest.status, "green");
                     }

@@ -13,8 +13,11 @@ namespace ProgressiveMapAccess.Helpers
     {
         #region Variables
         public MatchMakerSelectionLocationScreen mapSelection = null;
-        public MatchmakerMapPointsScreen mapPoints = null;
+        public MatchMakerSideSelectionScreen sideSelectionScreen = null;
+        public GameObject scavSelection = null;
+        public GameObject pmcSelection = null;
         public GameObject nextButton = null;
+        public GameObject conditionsPanel = null;
         public GameObject mapSelectionContainer = null;
         public GameObject mapButton = null;
         public GameObject groundZero = null;
@@ -41,6 +44,8 @@ namespace ProgressiveMapAccess.Helpers
 
             mapSelectionContainer = mapSelection.transform.Find("Content/Map/Image/Paths Container").gameObject;
             mapButton = mapSelection.transform.Find("MapButton").gameObject;
+            nextButton = mapSelection.transform.Find("ScreenDefaultButtons/NextButton").gameObject;
+            conditionsPanel = mapSelection.transform.Find("Conditions Panel").gameObject;
 
             groundZero = mapSelectionContainer.transform.GetChild(18).gameObject; // Ground Zero map button
             customs = mapSelectionContainer.transform.GetChild(12).gameObject; // Customs map button
@@ -55,17 +60,30 @@ namespace ProgressiveMapAccess.Helpers
             setLocationList();
         }
 
-        // Finds the next button on the map screen
-        public GameObject setMapScreenMappings()
+        // Finds the the side selection buttons
+        public bool setSelectSideMappings()
         {
-            if(mapPoints == null)
+            if (sideSelectionScreen == null)
             {
-                mapPoints = Singleton<MenuUI>.Instance.MatchmakerMapPoints;
+                sideSelectionScreen = Singleton<MenuUI>.Instance.MatchMakerSideSelectionScreen;
             }
 
-            nextButton = mapPoints.transform.Find("ScreenDefaultButtons/NextButton").gameObject;
+            scavSelection = sideSelectionScreen.transform.Find("Savage").gameObject;
+            pmcSelection = sideSelectionScreen.transform.Find("PMCs").gameObject;
 
-            return nextButton;
+
+            if (pmcSelection.GetComponentInChildren<UIAnimatedToggleSpawner>().Boolean_0)
+            {
+                Plugin.Instance.Log.LogInfo("PMC Selected");
+                return true;
+            }
+            else if(scavSelection.GetComponentInChildren<UIAnimatedToggleSpawner>().Boolean_0)
+            {
+                Plugin.Instance.Log.LogInfo("Scav Selected");
+                return false;
+            }
+
+                return false;;
         }
 
         // Clears then adds all map locations to the array
@@ -81,7 +99,7 @@ namespace ProgressiveMapAccess.Helpers
             locations.Add(shoreline);
             locations.Add(lighthouse);
             locations.Add(reserve);
-            //locations.Add(labs);
+            locations.Add(labs);
         }
         // Checks if the selected toggle button is true, returns true if it is
         public bool getToggleStatus(GameObject test)
@@ -118,7 +136,7 @@ namespace ProgressiveMapAccess.Helpers
             }
             GameObject result = test.transform.GetChild(3).gameObject;
 
-            if (result == null || !result.activeSelf)
+            if (result == null)
             {
                 if (Plugin.Instance.enableLogging)
                 {
@@ -126,7 +144,7 @@ namespace ProgressiveMapAccess.Helpers
                 }
                 return false;
             }
-            if(!result.activeSelf)
+            if (!result.activeSelf)
             {
                 return false;
             }
@@ -134,6 +152,27 @@ namespace ProgressiveMapAccess.Helpers
             {
                 return true;
             }
+        }
+
+        public string getMapName(GameObject test)
+        {
+            if (test == null)
+            {
+                if (Plugin.Instance.enableLogging)
+                {
+                    Plugin.Instance.Log.LogError("(getLockStatus)Target GameObject is null.");
+                }
+                return null;
+            }
+            GameObject _buttonPanel = test.transform.GetChild(7).gameObject;
+            GameObject _mapButton = _buttonPanel.transform.GetChild(0).gameObject;
+            GameObject _view = _mapButton.transform.GetChild(0).gameObject;
+            GameObject _label = _view.transform.GetChild(0).gameObject;
+
+            string _name = _label.GetComponentInChildren<TMP_Text>().text.ToLower();
+
+            if (Plugin.Instance.enableLogging) Plugin.Instance.Log.LogInfo(_name);
+            return _name;
         }
         #endregion
 
@@ -153,19 +192,61 @@ namespace ProgressiveMapAccess.Helpers
 
         #region Map Button Test Method
         // Set the map button availablity based on if the map is locked or not
-        public bool setMapButtonAvailable(GameObject test)
+        public bool SetButtonAvailable(GameObject test, bool state)
         {
-            if(getLockStatus(test) && getToggleStatus(test))
+            if (nextButton.activeSelf) return true;
+            if(!getLockStatus(test) && getToggleStatus(test))
             {
                 if(Plugin.Instance.enableLogging)
                 {
                     Plugin.Instance.Log.LogInfo($"{test}" + "found");
                 }
-                mapButton.SetActive(false);
+                //UnlockMapLocation(test);
+                nextButton.SetActive(state);
+                if (getMapName(test) == "the lab") return true;
+                conditionsPanel.SetActive(state);
+                //mapButton.SetActive(false);
                 return true;
             }
             return false;
         }
+
+        public void ClearButtonAvailable(GameObject target)
+        {
+            if (target != null) return;
+            nextButton.SetActive(false);
+            conditionsPanel.SetActive(false);
+        }
+
+        public bool UnlockMapLocation(GameObject test)
+        {
+            if (test == null)
+            {
+                if (Plugin.Instance.enableLogging)
+                {
+                    Plugin.Instance.Log.LogError("(getLockStatus)Target GameObject is null.");
+                }
+                return false;
+            }
+            GameObject _info = test.transform.GetChild(2).gameObject;
+            GameObject _lockedIcon = test.transform.GetChild(3).gameObject;
+            GameObject _availableIcon = test.transform.GetChild(4).gameObject;
+
+            _info.SetActive(false);
+            _lockedIcon.SetActive(false);
+            _availableIcon.SetActive(true);
+
+            if (!Plugin.Instance.enableLogging) return true;
+            Plugin.Instance.Log.LogInfo(_info);
+            Plugin.Instance.Log.LogInfo(_lockedIcon);
+            Plugin.Instance.Log.LogInfo(_availableIcon);
+            return true;
+        }
+
+        //public bool SetMapLocationAvailability()
+        //{
+
+        //}
         #endregion
     }
 }

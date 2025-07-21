@@ -7,16 +7,32 @@
       "RelativeMoniker": "D:0:0:{3EFA92C7-28C1-4F8D-8A8C-6B3A2673E77C}|ProgressiveMapAccess.csproj|solutionrelative:plugin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{3EFA92C7-28C1-4F8D-8A8C-6B3A2673E77C}|ProgressiveMapAccess.csproj|d:\\sp-tarkov dev\\development\\progressive map access\\patches\\matchmakerselectionlocationscreenpatch.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{3EFA92C7-28C1-4F8D-8A8C-6B3A2673E77C}|ProgressiveMapAccess.csproj|solutionrelative:patches\\matchmakerselectionlocationscreenpatch.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{3EFA92C7-28C1-4F8D-8A8C-6B3A2673E77C}|ProgressiveMapAccess.csproj|d:\\sp-tarkov dev\\development\\progressive map access\\modconfig\\raidstatus.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3EFA92C7-28C1-4F8D-8A8C-6B3A2673E77C}|ProgressiveMapAccess.csproj|solutionrelative:modconfig\\raidstatus.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{3EFA92C7-28C1-4F8D-8A8C-6B3A2673E77C}|ProgressiveMapAccess.csproj|d:\\sp-tarkov dev\\development\\progressive map access\\helpers\\ui mappings.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{3EFA92C7-28C1-4F8D-8A8C-6B3A2673E77C}|ProgressiveMapAccess.csproj|solutionrelative:helpers\\ui mappings.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{3EFA92C7-28C1-4F8D-8A8C-6B3A2673E77C}|ProgressiveMapAccess.csproj|d:\\sp-tarkov dev\\development\\progressive map access\\modconfig\\userprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3EFA92C7-28C1-4F8D-8A8C-6B3A2673E77C}|ProgressiveMapAccess.csproj|solutionrelative:modconfig\\userprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3EFA92C7-28C1-4F8D-8A8C-6B3A2673E77C}|ProgressiveMapAccess.csproj|d:\\sp-tarkov dev\\development\\progressive map access\\modconfig\\modconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3EFA92C7-28C1-4F8D-8A8C-6B3A2673E77C}|ProgressiveMapAccess.csproj|solutionrelative:modconfig\\modconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3EFA92C7-28C1-4F8D-8A8C-6B3A2673E77C}|ProgressiveMapAccess.csproj|d:\\sp-tarkov dev\\development\\progressive map access\\patches\\matchmakerselectionlocationscreenpatch.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3EFA92C7-28C1-4F8D-8A8C-6B3A2673E77C}|ProgressiveMapAccess.csproj|solutionrelative:patches\\matchmakerselectionlocationscreenpatch.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{3EFA92C7-28C1-4F8D-8A8C-6B3A2673E77C}|ProgressiveMapAccess.csproj|d:\\sp-tarkov dev\\development\\progressive map access\\progressivemapaccess.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
       "RelativeMoniker": "D:0:0:{3EFA92C7-28C1-4F8D-8A8C-6B3A2673E77C}|ProgressiveMapAccess.csproj|solutionrelative:progressivemapaccess.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3EFA92C7-28C1-4F8D-8A8C-6B3A2673E77C}|ProgressiveMapAccess.csproj|d:\\sp-tarkov dev\\development\\progressive map access\\helpers\\jsonhelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3EFA92C7-28C1-4F8D-8A8C-6B3A2673E77C}|ProgressiveMapAccess.csproj|solutionrelative:helpers\\jsonhelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -26,11 +42,66 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 8,
           "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "JsonHelper.cs",
+              "DocumentMoniker": "D:\\SP-Tarkov Dev\\Development\\Progressive Map Access\\Helpers\\JsonHelper.cs",
+              "RelativeDocumentMoniker": "Helpers\\JsonHelper.cs",
+              "ToolTip": "D:\\SP-Tarkov Dev\\Development\\Progressive Map Access\\Helpers\\JsonHelper.cs",
+              "RelativeToolTip": "Helpers\\JsonHelper.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACEAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-19T15:29:25.645Z"
+            },
             {
               "$type": "Document",
               "DocumentIndex": 3,
+              "Title": "UserProfile.cs",
+              "DocumentMoniker": "D:\\SP-Tarkov Dev\\Development\\Progressive Map Access\\ModConfig\\UserProfile.cs",
+              "RelativeDocumentMoniker": "ModConfig\\UserProfile.cs",
+              "ToolTip": "D:\\SP-Tarkov Dev\\Development\\Progressive Map Access\\ModConfig\\UserProfile.cs",
+              "RelativeToolTip": "ModConfig\\UserProfile.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACoAAAAhAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-19T15:26:55.439Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "RaidStatus.cs",
+              "DocumentMoniker": "D:\\SP-Tarkov Dev\\Development\\Progressive Map Access\\ModConfig\\RaidStatus.cs",
+              "RelativeDocumentMoniker": "ModConfig\\RaidStatus.cs",
+              "ToolTip": "D:\\SP-Tarkov Dev\\Development\\Progressive Map Access\\ModConfig\\RaidStatus.cs",
+              "RelativeToolTip": "ModConfig\\RaidStatus.cs",
+              "ViewState": "AgIAAAoAAAAAAAAAAAAgwCIAAAAyAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-19T15:26:55.613Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "ModConfig.cs",
+              "DocumentMoniker": "D:\\SP-Tarkov Dev\\Development\\Progressive Map Access\\ModConfig\\ModConfig.cs",
+              "RelativeDocumentMoniker": "ModConfig\\ModConfig.cs",
+              "ToolTip": "D:\\SP-Tarkov Dev\\Development\\Progressive Map Access\\ModConfig\\ModConfig.cs",
+              "RelativeToolTip": "ModConfig\\ModConfig.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-19T15:19:37.67Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
               "Title": "ProgressiveMapAccess.csproj",
               "DocumentMoniker": "D:\\SP-Tarkov Dev\\Development\\Progressive Map Access\\ProgressiveMapAccess.csproj",
               "RelativeDocumentMoniker": "ProgressiveMapAccess.csproj",
@@ -38,8 +109,7 @@
               "RelativeToolTip": "ProgressiveMapAccess.csproj",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2025-07-15T01:44:31.468Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-07-15T01:44:31.468Z"
             },
             {
               "$type": "Document",
@@ -49,20 +119,20 @@
               "RelativeDocumentMoniker": "Helpers\\UI Mappings.cs",
               "ToolTip": "D:\\SP-Tarkov Dev\\Development\\Progressive Map Access\\Helpers\\UI Mappings.cs",
               "RelativeToolTip": "Helpers\\UI Mappings.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAADoAAAAjAAAAAAAAAA==",
+              "ViewState": "AgIAAD8AAAAAAAAAAAAgwMIAAAAbAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-07-14T20:07:32.531Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 5,
               "Title": "MatchmakerSelectionLocationScreenPatch.cs",
               "DocumentMoniker": "D:\\SP-Tarkov Dev\\Development\\Progressive Map Access\\Patches\\MatchmakerSelectionLocationScreenPatch.cs",
               "RelativeDocumentMoniker": "Patches\\MatchmakerSelectionLocationScreenPatch.cs",
               "ToolTip": "D:\\SP-Tarkov Dev\\Development\\Progressive Map Access\\Patches\\MatchmakerSelectionLocationScreenPatch.cs",
               "RelativeToolTip": "Patches\\MatchmakerSelectionLocationScreenPatch.cs",
-              "ViewState": "AgIAAAsAAAAAAAAAAAAxwAkAAABTAAAAAAAAAA==",
+              "ViewState": "AgIAAAQAAAAAAAAAAAAowCQAAAAcAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-07-14T18:04:58.208Z",
               "EditorCaption": ""
@@ -75,7 +145,7 @@
               "RelativeDocumentMoniker": "Plugin.cs",
               "ToolTip": "D:\\SP-Tarkov Dev\\Development\\Progressive Map Access\\Plugin.cs",
               "RelativeToolTip": "Plugin.cs",
-              "ViewState": "AgIAABsAAAAAAAAAAAAowGYAAAAbAAAAAAAAAA==",
+              "ViewState": "AgIAAO0AAAAAAAAAAAAmwBcBAABRAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-06-28T21:55:18.768Z",
               "EditorCaption": ""

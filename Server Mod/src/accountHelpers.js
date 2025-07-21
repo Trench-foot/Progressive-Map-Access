@@ -9,6 +9,7 @@ const fs_1 = __importDefault(require("fs"));
 class AccountHelpers {
     logger;
     modConfig = require("../config/config.json");
+    locationInstance;
     currentDirectory = __dirname;
     dbPath = path_1.default.join(this.currentDirectory, "..", "db");
     // Creates the new user profiles if they don't exist, error checking and everything
@@ -87,8 +88,6 @@ class AccountHelpers {
     writeRaidStatusJsonFile(pmcData, raidResult) {
         const pmc = pmcData._id;
         const serverID = raidResult.serverId;
-        // const results = raidResult.results.result;
-        // const exit = raidResult.results.exitName;
         if (serverID.includes("Savage")) {
             if (this.modConfig.enableLogging) {
                 this.logger.log("Scav raid detected, skipping", "yellow");
@@ -98,7 +97,21 @@ class AccountHelpers {
         const user = {
             MapId: raidResult.serverId,
             RaidResult: raidResult.results.result,
-            Exit: raidResult.results.exitName
+            Exit: raidResult.results.exitName,
+            Camping: this.modConfig.campingTrip,
+            ExtendedCamping: this.modConfig.campingAdjacent,
+            Maps: {
+                groundZero: this.locationInstance.groundZero,
+                customs: this.locationInstance.customs,
+                factory: this.locationInstance.factory,
+                woods: this.locationInstance.woods,
+                interChange: this.locationInstance.interChange,
+                streets: this.locationInstance.streets,
+                shoreLine: this.locationInstance.shoreLine,
+                lightHouse: this.locationInstance.lightHouse,
+                reserve: this.locationInstance.reserve,
+                labs: this.locationInstance.labs
+            }
         };
         const userJson = JSON.stringify(user, null, 2);
         const filePath = this.dbPath + "/" + pmc + "/" + "lastRaidResults.json";
@@ -106,7 +119,7 @@ class AccountHelpers {
             if (err) {
                 if (err.code === "EEXIST") {
                     if (this.modConfig.enableLogging) {
-                        this.logger.log("File already exists.  No new file created.", "yellow");
+                        this.logger.log("Raid results already exists.  No new file created.", "yellow");
                     }
                     return true;
                 }
@@ -122,6 +135,24 @@ class AccountHelpers {
                     this.logger.log("JSON file created successfully.", "green");
                 }
                 return true;
+            }
+        });
+    }
+    // Updates the user profile after quest status checked
+    updateRaidStatus(pmcData, raidResult) {
+        const pmc = pmcData._id;
+        const userJson = JSON.stringify(raidResult, null, 2);
+        const filePath = this.dbPath + "/" + pmc + "/" + "lastRaidResults.json";
+        fs_1.default.writeFile(filePath, userJson, { flag: "r+" }, (err) => {
+            if (err) {
+                if (this.modConfig.enableLogging) {
+                    this.logger.log("Error writing files:" + err, "red");
+                }
+            }
+            else {
+                if (this.modConfig.enableLogging) {
+                    this.logger.log("Successfully wrote file", "green");
+                }
             }
         });
     }
