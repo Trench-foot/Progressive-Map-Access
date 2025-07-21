@@ -7,6 +7,7 @@ export class AccountHelpers
 {
     public logger;
     private modConfig = require("../config/config.json");
+    public locationInstance;
     public currentDirectory: string = __dirname;
     public dbPath: string = path.join(this.currentDirectory, "..", "db");
 
@@ -109,8 +110,6 @@ export class AccountHelpers
     {
         const pmc = pmcData._id;
         const serverID: string = raidResult.serverId;
-        // const results = raidResult.results.result;
-        // const exit = raidResult.results.exitName;
 
         if (serverID.includes("Savage") )
         {
@@ -126,7 +125,21 @@ export class AccountHelpers
         {
             MapId: raidResult.serverId,
             RaidResult: raidResult.results.result,
-            Exit: raidResult.results.exitName
+            Exit: raidResult.results.exitName,
+            Camping: this.modConfig.campingTrip,
+            ExtendedCamping:  this.modConfig.campingAdjacent,
+            Maps: {
+                groundZero: this.locationInstance.groundZero,
+                customs: this.locationInstance.customs,
+                factory: this.locationInstance.factory,
+                woods: this.locationInstance.woods,
+                interChange: this.locationInstance.interChange,
+                streets: this.locationInstance.streets,
+                shoreLine: this.locationInstance.shoreLine,
+                lightHouse: this.locationInstance.lightHouse,
+                reserve: this.locationInstance.reserve,
+                labs: this.locationInstance.labs
+            }
         }
 
         const userJson = JSON.stringify(user, null, 2);
@@ -140,7 +153,7 @@ export class AccountHelpers
                 {
                     if (this.modConfig.enableLogging)
                     {
-                        this.logger.log("File already exists.  No new file created.", "yellow");
+                        this.logger.log("Raid results already exists.  No new file created.", "yellow");
                     }
                     return true;
                 }
@@ -160,6 +173,33 @@ export class AccountHelpers
                     this.logger.log("JSON file created successfully.", "green");
                 }
                 return true;
+            }
+        })
+    }
+
+    // Updates the user profile after quest status checked
+    public updateRaidStatus(pmcData: IPmcData, raidResult: any)
+    {
+        const pmc = pmcData._id;
+
+        const userJson = JSON.stringify(raidResult, null, 2);
+        const filePath = this.dbPath + "/" + pmc + "/" + "lastRaidResults.json";
+
+        fs.writeFile(filePath, userJson, (err) => 
+        {
+            if (err) 
+            {
+                if (this.modConfig.enableLogging)
+                {
+                    this.logger.log("Error writing files:" + err, "red");
+                }
+            } 
+            else 
+            {
+                if (this.modConfig.enableLogging)
+                {
+                    this.logger.log("Successfully wrote file", "green");
+                }
             }
         })
     }
@@ -213,7 +253,7 @@ export class AccountHelpers
             {
                 if (this.modConfig.enableLogging)
                 {
-                    this.logger.log("Could not find file at: " + filePath, "red");
+                    this.logger.log("Could not find file at: " + filePath + "Complete a raid to create one.", "red");
                 }
                 // Returns null to prevent this from freezing the server on error.
                 // Only really happens during the intitial profile creation because this

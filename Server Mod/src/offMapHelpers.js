@@ -7,6 +7,7 @@ class OffMapHelpers {
     locationInstance;
     modConfig = require("../config/config.json");
     enableLogging = this.modConfig.enableLogging;
+    // Checks the status of the previous raid and opens an extra map if its configued for it
     checkPreviousRaidStatus(pmcData) {
         if (!this.modConfig.campingTrip) {
             return false;
@@ -128,6 +129,7 @@ class OffMapHelpers {
         }
         return false;
     }
+    // Opens even more maps based on the campingAdditional config 
     checkMapAdjacence(test) {
         if (this.enableLogging) {
             this.logger.log("Ground Zero" + this.locationInstance.groundZero, "green");

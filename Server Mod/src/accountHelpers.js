@@ -143,7 +143,7 @@ class AccountHelpers {
         const pmc = pmcData._id;
         const userJson = JSON.stringify(raidResult, null, 2);
         const filePath = this.dbPath + "/" + pmc + "/" + "lastRaidResults.json";
-        fs_1.default.writeFile(filePath, userJson, { flag: "r+" }, (err) => {
+        fs_1.default.writeFile(filePath, userJson, (err) => {
             if (err) {
                 if (this.modConfig.enableLogging) {
                     this.logger.log("Error writing files:" + err, "red");
@@ -190,7 +190,7 @@ class AccountHelpers {
         catch (error) {
             if (error.code === "ENOENT") {
                 if (this.modConfig.enableLogging) {
-                    this.logger.log("Could not find file at: " + filePath, "red");
+                    this.logger.log("Could not find file at: " + filePath + "Complete a raid to create one.", "red");
                 }
                 // Returns null to prevent this from freezing the server on error.
                 // Only really happens during the intitial profile creation because this

@@ -16,16 +16,18 @@ using SPT.Common.Http;
 using ProgressiveMapAccess.ModConfig;
 using System.Collections.Generic;
 using System.IO.MemoryMappedFiles;
+using EFT.Interactive;
 
 namespace ProgressiveMapAccess
 {
-    [BepInPlugin("ProgressiveMapAccess", "ProgressiveMapAccess", "1.0.0")]
+    [BepInPlugin("ProgressiveMapAccess", "ProgressiveMapAccess", "1.2.0")]
     [BepInDependency("com.SPT.core", "3.11.0")]
     public class Plugin : BaseUnityPlugin
     {
         public bool enableLogging = false;
         public bool raidStatusExists = false;
         public bool mapUpdated = false;
+        public bool configsUpdated = false;
         public Class303 class303_0;
         internal static Plugin Instance { get; set; }
         internal ManualLogSource Log { get; set; }
@@ -39,81 +41,28 @@ namespace ProgressiveMapAccess
         IDictionary<string, bool> raidStatusAvailable = new Dictionary<string, bool>();
 
         #region Test Methods
-        // Check if the game is ready to be played, if so, return true, otherwise return false
-        private bool testGameReady()
+        // Checks if the side selection screen is open
+        private bool TestSideSelectionScreenOpen()
         {
-            if (!Singleton<CommonUI>.Instantiated)
+            if (!TestGameReady()) return false;
+            var _sideSelectionScreen = Singleton<MenuUI>.Instance.MatchMakerSideSelectionScreen;
+            if(_sideSelectionScreen.isActiveAndEnabled)
             {
-                return false;
-            }
-            if (!Singleton<PreloaderUI>.Instantiated)
-            {
-                return false;
-            }
-            return true;
-        }
-        private bool isMapSelectionScreenFocus()
-        {
-            var mapSelectionScreen = Singleton<MenuUI>.Instance.MatchMakerSelectionLocationScreen;
-            if (mapSelectionScreen.isActiveAndEnabled)
-            {
-                if (enableLogging)
-                {
-                    Log.LogInfo("Map selection screen is focused.");
-                }
                 return true;
             }
+            configsUpdated = false;
             return false;
         }
-        // Check current screen type, kept for testing purposes
-        private EEftScreenType getCurrentScreen()
-        {
-            if (currentScreenSingletonClass == null)
-            {
-                currentScreenSingletonClass = CurrentScreenSingletonClass.Instance;
-            }
-
-            EEftScreenType _eScreenType = currentScreenSingletonClass.CurrentScreenController.ScreenType;
-
-            if (_eScreenType == null)
-            {
-                if (enableLogging)
-                {
-                    Log.LogInfo("Current screen is null, return none");
-                }
-                return EEftScreenType.None;
-            }
-
-            if (enableLogging)
-            {
-                Log.LogInfo($"Current screen type: {_eScreenType}");
-            }
-            return _eScreenType;
-        }
-        #endregion
-        private void Awake()
-        {
-            Instance = this;
-            Log = Logger;
-            UiMappings = new UI_Mappings();
-
-            new MatchMakerSideSelectionScreenPatch().Enable();
-            new MatchMakerMapPointsScreenPatch().Enable();
-            new Class303Patch().Enable();
-            //new MatchMakerSelectLocationScreenPatch().Enable();
-            //new MatchMakerSelectLocationScreenPatch2().Enable();
-        }
-
-        #region Test Methods
-        // Checks if the scav loot transfer screen is open
+        // Checks if the location selection screen is open
         private bool TestMapSelectionScreenOpen()
         {
+            if (!TestGameReady()) return false;
             var _locationSelectionScreen = Singleton<MenuUI>.Instance.MatchMakerSelectionLocationScreen;
             if (_locationSelectionScreen.isActiveAndEnabled)
             {
-
                 return true;
             }
+            mapUpdated = false;
             return false;
         }
         // Check if the game is ready to be played, if so, return true, otherwise return false
@@ -130,11 +79,6 @@ namespace ProgressiveMapAccess
             if(!Singleton<MenuUI>.Instantiated)
             {
                 //Log.LogInfo("MenuUI not ready");
-                return false;
-            }
-            if (!TestMapSelectionScreenOpen())
-            {
-                mapUpdated = false;
                 return false;
             }
             return true;
@@ -184,7 +128,28 @@ namespace ProgressiveMapAccess
             }
             return _eScreenType;
         }
+        // Checks the survived or runner status of the players previous raid
+        private bool TestRaidStatus()
+        {
+            if(JsonHelper.RaidStatus.raidResult == "Survived" || JsonHelper.RaidStatus.raidResult == "Runner")
+            {
+                return true;
+            }
+            return false;
+        }
         #endregion
+        private void Awake()
+        {
+            Instance = this;
+            Log = Logger;
+            UiMappings = new UI_Mappings();
+
+            //new MatchMakerSideSelectionScreenPatch().Enable();
+            new MatchMakerMapPointsScreenPatch().Enable();
+            new Class303Patch().Enable();
+            //new MatchMakerSelectLocationScreenPatch().Enable();
+            //new MatchMakerSelectLocationScreenPatch2().Enable();
+        }
 
         public void LateUpdate()
         {
@@ -205,7 +170,8 @@ namespace ProgressiveMapAccess
                 testSelectedMap();
             }
 
-            if (!TestGameReady()) return;
+            //if (!TestMapSelectionScreenOpen()) return;
+            UpdatePlayerConfigs();
             updateMapSelectScreen();
             testSelectedMap();
 
@@ -216,6 +182,7 @@ namespace ProgressiveMapAccess
         // Activates the conditions panel and the next button if the map is unlocked
         public void testSelectedMap()
         {
+            if (!TestMapSelectionScreenOpen()) return;
             //UiMappings.setMapSelectionScreen();
             foreach (GameObject location in UiMappings.locations)
             {
@@ -237,11 +204,12 @@ namespace ProgressiveMapAccess
         // Update unlocked map locations on screen opening
         public void updateMapSelectScreen()
         {
+            if (!TestMapSelectionScreenOpen()) return;
             if (mapUpdated) return;
             RequestConfigs();
             //Log.LogInfo("updateMapselectscreen called");
             UiMappings.setMapSelectionScreen();
-            if (raidStatusExists)
+            if (raidStatusExists && TestRaidStatus())
             {
                 if (UiMappings.locations.Count <1)
                 {
@@ -296,6 +264,16 @@ namespace ProgressiveMapAccess
             UiMappings.ClearButtonAvailable(null);
             mapUpdated = true;
         }
+        // Force server to check quest progress on the side selection screen
+        public void UpdatePlayerConfigs()
+        {
+            if (!TestSideSelectionScreenOpen()) return;
+            if (configsUpdated) return;
+            Log.LogInfo("Running location check");
+            RequestHandler.GetJson("/ProgressiveMapAccess/CheckQuestProgress/");
+            //class303_0.GetLevelSettings();
+            configsUpdated = true;
+        }
         // Consolidate both server calls so I can fire them when the player opens a specific screen
         public void RequestConfigs()
         {
@@ -305,10 +283,6 @@ namespace ProgressiveMapAccess
         // Get the players unlocked map status from the server
         private void RequestUserProfile()
         {
-            string sessionID = RequestHandler.SessionId.ToString();
-
-            Log.LogInfo($"{sessionID}");
-
             string json = RequestHandler.GetJson("/ProgressiveMapAccess/UserProfile/");
             if (json == "null")
             {
@@ -326,10 +300,6 @@ namespace ProgressiveMapAccess
         // Get the players raid status file from the server
         private void RequestUserRaidStatus()
         {
-            string sessionID = RequestHandler.SessionId.ToString();
-
-            Log.LogInfo($"{sessionID}");
-
             string json = RequestHandler.GetJson("/ProgressiveMapAccess/UserRaidStatus/");
             if (json == "null")
             {

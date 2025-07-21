@@ -17,20 +17,6 @@ class ProgressiveMapAccess {
     enableLogging = this.modConfig.enableLogging;
     matchResults;
     modName = "Progressive Map Access";
-    // private groundZero;
-    // private groundZeroHigh;
-    // private customs;
-    // private factoryDay;
-    // private factoryNight;
-    // private woods;
-    // private interChange;
-    // private streets;
-    // private shoreLine;
-    // private lightHouse;
-    // private reserve;
-    // private labs;
-    // private currentDirectory: string = __dirname;
-    // private dbPath: string = path.join(this.currentDirectory, "..", "db");
     postDBLoad(container) {
         this.databaseServer = container.resolve("DatabaseServer");
         this.profileHelper = container.resolve("ProfileHelper");
@@ -40,7 +26,6 @@ class ProgressiveMapAccess {
         this.accountInstance.locationInstance = this.locationInstance;
         if (this.modConfig.enabled) {
             // Lock maps on server startup
-            //this.setMapMappings();
             this.lockMapsOnStart();
             this.locationInstance.initializeArrays();
             this.logger.log("[PMA] Locking maps!", "yellow");
@@ -66,7 +51,7 @@ class ProgressiveMapAccess {
                     }
                 },
                 {
-                    // update on client game start
+                    // Create user profile when the character is created
                     url: "/client/game/profile/create",
                     action: async (url, info, sessionId, output) => {
                         const currentProfile = this.profileHelper.getPmcProfile(sessionId);
@@ -78,73 +63,7 @@ class ProgressiveMapAccess {
                     }
                 },
                 {
-                    // update on quest completion, this is a double check as sometimes the user profile gets
-                    // updated before the actual process of checking quest progress
-                    url: "/client/game/profile/items/moving",
-                    action: async (url, info, sessionId, output) => {
-                        const currentProfile = this.profileHelper.getPmcProfile(sessionId);
-                        if (this.enableLogging) {
-                            this.logger.log("Checking quest progress, /client/game/profile/items/moving", "yellow");
-                        }
-                        this.updateQuestProgression(currentProfile);
-                        return output;
-                    }
-                },
-                // {
-                //     // update on quest completion, this is a double check as sometimes the user profile gets
-                //     // updated before the actual process of checking quest progress
-                //     url: "/client/mail/dialog/info",
-                //     action: async (url:string, info, sessionId:string, output:string) =>
-                //     {
-                //         const currentProfile : IPmcData = this.profileHelper.getPmcProfile(sessionId);   
-                //         this.updateQuestProgression(currentProfile);
-                //         if (this.enableLogging)
-                //         {
-                //             this.logger.log("Checking quest progress, /client/mail/dialog/info", "yellow");
-                //         }                       
-                //         const test = this.updateMapsWait(currentProfile);
-                //         if (this.enableLogging)
-                //         {
-                //             this.logger.log("Map update returned: " + test, "white");
-                //         }
-                //         return output;
-                //     }
-                // },
-                {
-                    // update on client updating locations
-                    url: "/client/locations",
-                    action: async (url, info, sessionId, output) => {
-                        const currentProfile = this.profileHelper.getPmcProfile(sessionId);
-                        const test = this.updateMapsWait(currentProfile);
-                        if (this.enableLogging) {
-                            this.logger.log("Map update returned: " + test, "white");
-                        }
-                        if (this.enableLogging) {
-                            this.logger.log("[PMA] Checking map updates", "yellow");
-                        }
-                        return output;
-                    }
-                },
-                {
-                    // back up update call, this is useful if the player deleted there profile and doesn't
-                    // have quests to accept to force the mod to check there access
-                    url: "/client/survey/view",
-                    action: async (url, info, sessionId, output) => {
-                        const currentProfile = this.profileHelper.getPmcProfile(sessionId);
-                        if (this.enableLogging) {
-                            this.logger.log("Checking quest progress, /client/survey/view", "yellow");
-                        }
-                        this.updateQuestProgression(currentProfile);
-                        const test = this.updateMapsWait(currentProfile);
-                        if (this.enableLogging) {
-                            this.logger.log("Map update returned: " + test, "white");
-                        }
-                        return output;
-                    }
-                },
-                {
-                    // back up update call, this is useful if the player deleted there profile and doesn't
-                    // have quests to accept to force the mod to check there access
+                    // Update or create the users raidstatus.json file on raid end
                     url: "/client/match/local/end",
                     action: async (url, info, sessionId, output) => {
                         const currentProfile = this.profileHelper.getPmcProfile(sessionId);
@@ -157,23 +76,39 @@ class ProgressiveMapAccess {
                     }
                 }
             ], "spt");
+            // Client routes to update map
             staticRouterModService.registerStaticRouter(`StaticGetConfig${this.modName}`, [{
+                    // Force server mod to check for updates to quest progress
+                    url: "/ProgressiveMapAccess/CheckQuestProgress/",
+                    action: async (url, info, sessionId) => {
+                        const currentProfile = this.profileHelper.getPmcProfile(sessionId);
+                        this.updateQuestProgression(currentProfile);
+                        this.updateMapsWait(currentProfile);
+                        const profilePath = this.accountInstance.dbPath + "/" + currentProfile._id + "/" + currentProfile._id + ".json";
+                        const profile = this.accountInstance.readJsonFileSync(profilePath);
+                        this.logger.log("[PMA] Checking quest progress, " + currentProfile._id, "white");
+                        return JSON.stringify(profile);
+                    }
+                },
+                {
+                    // Sends the users quest progress to the client mod
                     url: "/ProgressiveMapAccess/UserProfile/",
                     action: async (url, info, sessionId) => {
                         const currentProfile = this.profileHelper.getPmcProfile(sessionId);
                         const profilePath = this.accountInstance.dbPath + "/" + currentProfile._id + "/" + currentProfile._id + ".json";
                         const profile = this.accountInstance.readJsonFileSync(profilePath);
-                        this.logger.log(currentProfile._id, "white");
+                        this.logger.log("[PMA] Sending users quest progress, " + currentProfile._id, "white");
                         return JSON.stringify(profile);
                     }
                 },
                 {
+                    // Sends the users raid status file to the client mod
                     url: "/ProgressiveMapAccess/UserRaidStatus/",
                     action: async (url, info, sessionId) => {
                         const currentProfile = this.profileHelper.getPmcProfile(sessionId);
                         const profilePath = this.accountInstance.dbPath + "/" + currentProfile._id + "/" + "lastRaidResults.json";
                         const profile = this.accountInstance.readJsonFileSync(profilePath);
-                        this.logger.log(currentProfile._id, "white");
+                        this.logger.log("[PMA] Sending users raid status, " + currentProfile._id, "white");
                         return JSON.stringify(profile);
                     }
                 }], "GetConfig");
@@ -202,18 +137,6 @@ class ProgressiveMapAccess {
         if (this.enableLogging) {
             this.logger.log("Locking map on startup", "white");
         }
-        // this.locationInstance.groundZero.Locked = this.modConfig.GroundZero.lockedByDefault;
-        // this.locationInstance.groundZeroHigh.Locked = this.modConfig.GroundZero.lockedByDefault;
-        // this.locationInstance.customs.Locked = this.modConfig.Customs.lockedByDefault;
-        // this.locationInstance.factoryDay.Locked = this.modConfig.Factory.lockedByDefault;
-        // this.locationInstance.factoryNight.Locked = this.modConfig.Factory.lockedByDefault;
-        // this.locationInstance.woods.Locked = this.modConfig.Woods.lockedByDefault;
-        // this.locationInstance.interChange.Locked = this.modConfig.Interchange.lockedByDefault;
-        // this.locationInstance.streets.Locked = this.modConfig.Streets.lockedByDefault;
-        // this.locationInstance.shoreLine.Locked = this.modConfig.Shoreline.lockedByDefault;
-        // this.locationInstance.lightHouse.Locked = this.modConfig.Lighthouse.lockedByDefault;
-        // this.locationInstance.reserve.Locked = this.modConfig.Reserve.lockedByDefault;
-        // this.locationInstance.labs.Locked = this.modConfig.Labs.lockedByDefault;
         this.tables.locations.sandbox.base.Locked = true;
         this.tables.locations.sandbox_high.base.Locked = true;
         this.tables.locations.bigmap.base.Locked = true;
@@ -250,22 +173,6 @@ class ProgressiveMapAccess {
             if (this.enableLogging) {
                 this.logger.log("Update not complete", "green");
             }
-            // if (this.offMapInstance.checkPreviousRaidStatus(pmcData))
-            // {
-            //     if (this.enableLogging)
-            //     {
-            //         this.logger.log("Update complete", "yellow");               
-            //     }
-            //     return true;
-            // }
-            // else
-            // {
-            //     if (this.enableLogging)
-            //     {
-            //         this.logger.log("Update not complete", "yellow");                
-            //     }
-            //     return false;
-            // }
             return false;
         }
     }
