@@ -40,54 +40,110 @@ class OffMapHelpers {
             }
             switch (locationResult) {
                 case "Sandbox":
-                    this.locationInstance.groundZero = false,
-                        this.checkMapAdjacence("Sandbox");
+                    this.locationInstance.groundZero = false;
+                    if (this.modConfig.campingAdjacent) {
+                        this.locationInstance.streets = false;
+                    }
+                    //this.checkMapAdjacence("Sandbox")
                     break;
                 case "Sandbox_high":
-                    this.locationInstance.groundZeroHigh = false,
-                        this.checkMapAdjacence("Sandbox_high");
+                    this.locationInstance.groundZeroHigh = false;
+                    if (this.modConfig.campingAdjacent) {
+                        this.locationInstance.streets = false;
+                    }
+                    //this.checkMapAdjacence("Sandbox_high")
                     break;
                 case "bigmap":
-                    this.locationInstance.customs = false,
-                        this.checkMapAdjacence("bigmap");
+                    this.locationInstance.customs = false;
+                    if (this.modConfig.campingAdjacent) {
+                        this.locationInstance.factoryDay = false;
+                        this.locationInstance.factoryNight = false;
+                        this.locationInstance.interChange = false;
+                        this.locationInstance.reserve = false;
+                    }
+                    //this.checkMapAdjacence("bigmap")
                     break;
                 case "factory4_day":
                     this.locationInstance.factoryDay = false,
-                        this.locationInstance.factoryNight = false,
-                        this.checkMapAdjacence("factory4_day");
+                        this.locationInstance.factoryNight = false;
+                    if (this.modConfig.campingAdjacent) {
+                        this.locationInstance.customs = false;
+                        this.locationInstance.woods = false;
+                        this.locationInstance.labs = false;
+                    }
+                    //this.checkMapAdjacence("factory4_day")
                     break;
                 case "factory4_night":
                     this.locationInstance.factoryDay = false,
-                        this.locationInstance.factoryNight = false,
-                        this.checkMapAdjacence("factory4_night");
+                        this.locationInstance.factoryNight = false;
+                    if (this.modConfig.campingAdjacent) {
+                        this.locationInstance.customs = false;
+                        this.locationInstance.woods = false;
+                        this.locationInstance.labs = false;
+                    }
+                    //this.checkMapAdjacence("factory4_night")
                     break;
                 case "Woods":
-                    this.locationInstance.woods = false,
-                        this.checkMapAdjacence("Woods");
+                    this.locationInstance.woods = false;
+                    if (this.modConfig.campingAdjacent) {
+                        this.locationInstance.factoryDay = false;
+                        this.locationInstance.factoryNight = false;
+                        this.locationInstance.reserve = false;
+                        this.locationInstance.lightHouse = false;
+                    }
+                    //this.checkMapAdjacence("Woods")
                     break;
                 case "Interchange":
-                    this.locationInstance.interChange = false,
-                        this.checkMapAdjacence("Interchange");
+                    this.locationInstance.interChange = false;
+                    if (this.modConfig.campingAdjacent) {
+                        this.locationInstance.customs = false;
+                        this.locationInstance.streets = false;
+                    }
+                    //this.checkMapAdjacence("Interchange")
                     break;
                 case "Shoreline":
-                    this.locationInstance.shoreLine = false,
-                        this.checkMapAdjacence("Shoreline");
+                    this.locationInstance.shoreLine = false;
+                    if (this.modConfig.campingAdjacent) {
+                        this.locationInstance.lightHouse = false;
+                    }
+                    //this.checkMapAdjacence("Shoreline")
                     break;
                 case "RezervBase":
-                    this.locationInstance.reserve = false,
-                        this.checkMapAdjacence("RezervBase");
+                    this.locationInstance.reserve = false;
+                    if (this.modConfig.campingAdjacent) {
+                        this.locationInstance.customs = false;
+                        this.locationInstance.woods = false;
+                        this.locationInstance.lightHouse = false;
+                    }
+                    //this.checkMapAdjacence("RezervBase")
                     break;
                 case "Lighthouse":
-                    this.locationInstance.lightHouse = false,
-                        this.checkMapAdjacence("Lighthouse");
+                    this.locationInstance.lightHouse = false;
+                    if (this.modConfig.campingAdjacent) {
+                        this.locationInstance.woods = false;
+                        this.locationInstance.shoreLine = false;
+                        this.locationInstance.reserve = false;
+                    }
+                    //this.checkMapAdjacence("Lighthouse")
                     break;
                 case "TarkovStreets":
-                    this.locationInstance.streets = false,
-                        this.checkMapAdjacence("TarkovStreets");
+                    this.locationInstance.streets = false;
+                    if (this.modConfig.campingAdjacent) {
+                        this.locationInstance.groundZero = false;
+                        this.locationInstance.groundZeroHigh = false;
+                        this.locationInstance.interChange = false;
+                        this.locationInstance.labs = false;
+                    }
+                    //this.checkMapAdjacence("TarkovStreets")
                     break;
                 case "laboratory":
-                    this.locationInstance.labs = false,
-                        this.checkMapAdjacence("laboratory");
+                    this.locationInstance.labs = false;
+                    if (this.modConfig.campingAdjacent) {
+                        this.locationInstance.factoryDay = false;
+                        this.locationInstance.factoryNight = false;
+                        this.locationInstance.streets = false;
+                    }
+                    //this.checkMapAdjacence("laboratory")
                     break;
                 default:
                     if (this.enableLogging) {

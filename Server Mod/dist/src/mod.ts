@@ -45,7 +45,6 @@ class ProgressiveMapAccess implements IPostDBLoadMod, IPreSptLoadMod
         {
             // Lock maps on server startup
             this.lockMapsOnStart();
-            this.locationInstance.initializeArrays();
             this.logger.log("[PMA] Locking maps!","yellow");
         }
     }
