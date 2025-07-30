@@ -14,11 +14,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\GitHub\\Progressive-Map-Access\\Client Mod\\ProgressiveMapAccess.csproj",
+      "projectUniqueName": "D:\\SP-Tarkov Dev\\Development\\Progressive Map Access\\ProgressiveMapAccess.csproj",
       "projectName": "ProgressiveMapAccess",
-      "projectPath": "D:\\GitHub\\Progressive-Map-Access\\Client Mod\\ProgressiveMapAccess.csproj",
+      "projectPath": "D:\\SP-Tarkov Dev\\Development\\Progressive Map Access\\ProgressiveMapAccess.csproj",
       "packagesPath": "C:\\Users\\James\\.nuget\\packages\\",
-      "outputPath": "D:\\GitHub\\Progressive-Map-Access\\Client Mod\\obj\\",
+      "outputPath": "D:\\SP-Tarkov Dev\\Development\\Progressive Map Access\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

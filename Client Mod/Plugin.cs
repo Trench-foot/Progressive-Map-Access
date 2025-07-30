@@ -2,25 +2,18 @@ using BepInEx;
 using BepInEx.Bootstrap;
 using BepInEx.Logging;
 using Comfort.Common;
-using EFT.InventoryLogic;
 using EFT.UI;
 using EFT.UI.Screens;
 using ProgressiveMapAccess.Helpers;
-using System;
+using SPT.Common.Http;
+using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using SPT.Common.Http;
-using ProgressiveMapAccess.ModConfig;
-using System.Collections.Generic;
-using System.IO.MemoryMappedFiles;
-using EFT.Interactive;
 
 namespace ProgressiveMapAccess
 {
-    [BepInPlugin("ProgressiveMapAccess", "ProgressiveMapAccess", "1.2.0")]
+    [BepInPlugin("ProgressiveMapAccess", "ProgressiveMapAccess", "1.4.0")]
     [BepInDependency("com.SPT.core", "3.11.0")]
     public class Plugin : BaseUnityPlugin
     {
@@ -50,8 +43,11 @@ namespace ProgressiveMapAccess
             {
                 return true;
             }
-            configsUpdated = false;
-            return false;
+            else
+            {
+                configsUpdated = false;
+                return false;
+            }
         }
         // Checks if the location selection screen is open
         private bool TestMapSelectionScreenOpen()
@@ -62,8 +58,11 @@ namespace ProgressiveMapAccess
             {
                 return true;
             }
-            mapUpdated = false;
-            return false;
+            else
+            {
+                //mapUpdated = false;
+                return false;
+            }
         }
         // Check if the game is ready to be played, if so, return true, otherwise return false
         private bool TestGameReady()
@@ -153,22 +152,22 @@ namespace ProgressiveMapAccess
 
         public void LateUpdate()
         {
-            if (Input.GetKeyDown(KeyCode.L))
-            {
-                Log.LogInfo(GetCurrentScreen());
-                Log.LogInfo(GetCurrentScene());
-                UiMappings.setSelectSideMappings();
-            }
+            //if (Input.GetKeyDown(KeyCode.L))
+            //{
+            //    Log.LogInfo(GetCurrentScreen());
+            //    Log.LogInfo(GetCurrentScene());
+            //    UiMappings.setSelectSideMappings();
+            //}
 
-            if (Input.GetKeyDown(KeyCode.B))
-            {
-                updateMapSelectScreen();
-            }
+            //if (Input.GetKeyDown(KeyCode.B))
+            //{
+            //    updateMapSelectScreen();
+            //}
 
-            if (Input.GetKeyDown(KeyCode.P))
-            {
-                testSelectedMap();
-            }
+            //if (Input.GetKeyDown(KeyCode.P))
+            //{
+            //    testSelectedMap();
+            //}
 
             //if (!TestMapSelectionScreenOpen()) return;
             UpdatePlayerConfigs();
@@ -183,6 +182,7 @@ namespace ProgressiveMapAccess
         public void testSelectedMap()
         {
             if (!TestMapSelectionScreenOpen()) return;
+            //if (mapUpdated) return;
             //UiMappings.setMapSelectionScreen();
             foreach (GameObject location in UiMappings.locations)
             {
@@ -200,6 +200,7 @@ namespace ProgressiveMapAccess
                     break;
                 }
             }
+            //mapUpdated = true;
         }
         // Update unlocked map locations on screen opening
         public void updateMapSelectScreen()
@@ -273,6 +274,7 @@ namespace ProgressiveMapAccess
             RequestHandler.GetJson("/ProgressiveMapAccess/CheckQuestProgress/");
             //class303_0.GetLevelSettings();
             configsUpdated = true;
+            mapUpdated = false;
         }
         // Consolidate both server calls so I can fire them when the player opens a specific screen
         public void RequestConfigs()
@@ -330,6 +332,7 @@ namespace ProgressiveMapAccess
             mapAvailable.Add("lighthouse", JsonHelper.UserProfile.Maps.lightHouseLocked);
             mapAvailable.Add("reserve", JsonHelper.UserProfile.Maps.reserveLocked);
             mapAvailable.Add("the lab", JsonHelper.UserProfile.Maps.labsLocked);
+            mapAvailable.Add("terminal", true);
         }
         // Add current players raid settings to the raid maps dictionary
         private void UpdateRaidMapsDictionary()
@@ -345,6 +348,7 @@ namespace ProgressiveMapAccess
             raidStatusAvailable.Add("lighthouse", JsonHelper.RaidStatus.Maps.lightHouseLocked);
             raidStatusAvailable.Add("reserve", JsonHelper.RaidStatus.Maps.reserveLocked);
             raidStatusAvailable.Add("the lab", JsonHelper.RaidStatus.Maps.labsLocked);
+            raidStatusAvailable.Add("terminal", true);
         }
         
         // Only used for debuging, keeping it just incase

@@ -30,6 +30,7 @@ namespace ProgressiveMapAccess.Helpers
         public GameObject lighthouse = null;
         public GameObject reserve = null;
         public GameObject labs = null;
+        public GameObject terminal = null;
         public List<GameObject> locations = new List<GameObject>();
         #endregion
 
@@ -50,13 +51,21 @@ namespace ProgressiveMapAccess.Helpers
             groundZero = mapSelectionContainer.transform.GetChild(18).gameObject; // Ground Zero map button
             customs = mapSelectionContainer.transform.GetChild(12).gameObject; // Customs map button
             factory = mapSelectionContainer.transform.GetChild(13).gameObject; // Factory map button
-            woods = mapSelectionContainer.transform.GetChild(22).gameObject; // Woods map button
+            woods = mapSelectionContainer.transform.GetChild(21).gameObject; // Woods map button
             interchange = mapSelectionContainer.transform.GetChild(14).gameObject; // Interchange map button
             streets = mapSelectionContainer.transform.GetChild(20).gameObject; // Streets map button
             shoreline = mapSelectionContainer.transform.GetChild(19).gameObject; // Shoreline map button
             lighthouse = mapSelectionContainer.transform.GetChild(16).gameObject; // Lighthouse map button
             reserve = mapSelectionContainer.transform.GetChild(17).gameObject; // Reserve map button
             labs = mapSelectionContainer.transform.GetChild(15).gameObject; // Labs map button
+            terminal = mapSelectionContainer.transform.GetChild(22).gameObject; // Labs map button
+
+            if (getMapName(woods) != "woods")
+            {
+                woods = mapSelectionContainer.transform.GetChild(22).gameObject; // Woods map button
+                terminal = mapSelectionContainer.transform.GetChild(21).gameObject; // Labs map button
+                Plugin.Instance.Log.LogInfo("[PMA] First woods mapping is wrong, fixing!");
+            }    
             setLocationList();
         }
 
@@ -100,6 +109,7 @@ namespace ProgressiveMapAccess.Helpers
             locations.Add(lighthouse);
             locations.Add(reserve);
             locations.Add(labs);
+            locations.Add(terminal);
         }
         // Checks if the selected toggle button is true, returns true if it is
         public bool getToggleStatus(GameObject test)
@@ -201,6 +211,10 @@ namespace ProgressiveMapAccess.Helpers
                 {
                     Plugin.Instance.Log.LogInfo($"{test}" + "found");
                 }
+                if(test == terminal)
+                {
+                    return false;
+                }
                 //UnlockMapLocation(test);
                 nextButton.SetActive(state);
                 if (getMapName(test) == "the lab") return true;
@@ -226,6 +240,10 @@ namespace ProgressiveMapAccess.Helpers
                 {
                     Plugin.Instance.Log.LogError("(getLockStatus)Target GameObject is null.");
                 }
+                return false;
+            }
+            if (test == terminal)
+            {
                 return false;
             }
             GameObject _info = test.transform.GetChild(2).gameObject;

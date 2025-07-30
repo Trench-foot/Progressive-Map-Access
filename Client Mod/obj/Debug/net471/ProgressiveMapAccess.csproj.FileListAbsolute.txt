@@ -136,7 +136,6 @@ D:\SP-Tarkov Dev\Development\Progressive Map Access\obj\Debug\net471\Progressive
 D:\SP-Tarkov Dev\Development\Progressive Map Access\obj\Debug\net471\ProgressiveMapAccess.AssemblyInfoInputs.cache
 D:\SP-Tarkov Dev\Development\Progressive Map Access\obj\Debug\net471\ProgressiveMapAccess.AssemblyInfo.cs
 D:\SP-Tarkov Dev\Development\Progressive Map Access\obj\Debug\net471\ProgressiveMapAccess.csproj.CoreCompileInputs.cache
-D:\SP-Tarkov Dev\Development\Progressive Map Access\obj\Debug\net471\ProgressiveMapAccess.sourcelink.json
 D:\SP-Tarkov Dev\Development\Progressive Map Access\obj\Debug\net471\Progress.4C562844.Up2Date
 D:\SP-Tarkov Dev\Development\Progressive Map Access\obj\Debug\net471\ProgressiveMapAccess.dll
 D:\SP-Tarkov Dev\Development\Progressive Map Access\obj\Debug\net471\ProgressiveMapAccess.pdb
