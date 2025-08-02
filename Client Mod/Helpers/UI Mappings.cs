@@ -1,4 +1,5 @@
 ﻿using Comfort.Common;
+using EFT.Interactive;
 using EFT.InventoryLogic;
 using EFT.UI;
 using EFT.UI.DragAndDrop;
@@ -31,6 +32,18 @@ namespace ProgressiveMapAccess.Helpers
         public GameObject reserve = null;
         public GameObject labs = null;
         public GameObject terminal = null;
+        public GameObject map1 = null;
+        public GameObject map2 = null;
+        public GameObject map3 = null;
+        public GameObject map4 = null;
+        public GameObject map5 = null;
+        public GameObject map6 = null;
+        public GameObject map7 = null;
+        public GameObject map8 = null;
+        public GameObject map9 = null;
+        public GameObject map10 = null;
+        public GameObject map11 = null;
+        public List<GameObject> mapObjects = new List<GameObject>();
         public List<GameObject> locations = new List<GameObject>();
         #endregion
 
@@ -48,24 +61,98 @@ namespace ProgressiveMapAccess.Helpers
             nextButton = mapSelection.transform.Find("ScreenDefaultButtons/NextButton").gameObject;
             conditionsPanel = mapSelection.transform.Find("Conditions Panel").gameObject;
 
-            groundZero = mapSelectionContainer.transform.GetChild(18).gameObject; // Ground Zero map button
-            customs = mapSelectionContainer.transform.GetChild(12).gameObject; // Customs map button
-            factory = mapSelectionContainer.transform.GetChild(13).gameObject; // Factory map button
-            woods = mapSelectionContainer.transform.GetChild(21).gameObject; // Woods map button
-            interchange = mapSelectionContainer.transform.GetChild(14).gameObject; // Interchange map button
-            streets = mapSelectionContainer.transform.GetChild(20).gameObject; // Streets map button
-            shoreline = mapSelectionContainer.transform.GetChild(19).gameObject; // Shoreline map button
-            lighthouse = mapSelectionContainer.transform.GetChild(16).gameObject; // Lighthouse map button
-            reserve = mapSelectionContainer.transform.GetChild(17).gameObject; // Reserve map button
-            labs = mapSelectionContainer.transform.GetChild(15).gameObject; // Labs map button
-            terminal = mapSelectionContainer.transform.GetChild(22).gameObject; // Labs map button
+            map1 = mapSelectionContainer.transform.GetChild(12).gameObject;
+            map2 = mapSelectionContainer.transform.GetChild(13).gameObject;
+            map3 = mapSelectionContainer.transform.GetChild(14).gameObject;
+            map4 = mapSelectionContainer.transform.GetChild(15).gameObject;
+            map5 = mapSelectionContainer.transform.GetChild(16).gameObject;
+            map6 = mapSelectionContainer.transform.GetChild(17).gameObject;
+            map7 = mapSelectionContainer.transform.GetChild(18).gameObject;
+            map8 = mapSelectionContainer.transform.GetChild(19).gameObject;
+            map9 = mapSelectionContainer.transform.GetChild(20).gameObject;
+            map10 = mapSelectionContainer.transform.GetChild(21).gameObject;
+            map11 = mapSelectionContainer.transform.GetChild(22).gameObject;
 
-            if (getMapName(woods) != "woods")
+            mapObjects.Clear();
+            mapObjects.Add(map1);
+            mapObjects.Add(map2);
+            mapObjects.Add(map3);
+            mapObjects.Add(map4);
+            mapObjects.Add(map5);
+            mapObjects.Add(map6);
+            mapObjects.Add(map7);
+            mapObjects.Add(map8);
+            mapObjects.Add(map9);
+            mapObjects.Add(map10);
+            mapObjects.Add(map11);
+
+            foreach (GameObject map in mapObjects)
             {
-                woods = mapSelectionContainer.transform.GetChild(22).gameObject; // Woods map button
-                terminal = mapSelectionContainer.transform.GetChild(21).gameObject; // Labs map button
-                Plugin.Instance.Log.LogInfo("[PMA] First woods mapping is wrong, fixing!");
-            }    
+                string test = getMapName(map);
+                switch (test)
+                {
+                    case "ground zero":
+                        groundZero = map;
+                        break;
+                    case "customs":
+                        customs = map;
+                        break;
+                    case "factory":
+                        factory = map;
+                        break;
+                    case "woods":
+                        woods = map;
+                        break;
+                    case "interchange":
+                        interchange = map;
+                        break;
+                    case "streets of tarkov":
+                        streets = map;
+                        break;
+                    case "shoreline":
+                        shoreline = map;
+                        break;
+                    case "lighthouse":
+                        lighthouse = map;
+                        break;
+                    case "reserve":
+                        reserve = map;
+                        break;
+                    case "the lab":
+                        labs = map;
+                        break;
+                    case "terminal":
+                        terminal = map;
+                        break;
+                    default:
+                        if(Plugin.Instance.enableLogging)
+                        {
+                            Plugin.Instance.Log.LogError($"[PMA] Map name '{test}' not recognized. Please check the map selection screen mappings.");
+
+                        }
+                       break;
+                }
+
+            }
+
+            //groundZero = mapSelectionContainer.transform.GetChild(18).gameObject; // Ground Zero map button
+            //customs = mapSelectionContainer.transform.GetChild(12).gameObject; // Customs map button
+            //factory = mapSelectionContainer.transform.GetChild(13).gameObject; // Factory map button
+            //woods = mapSelectionContainer.transform.GetChild(21).gameObject; // Woods map button
+            //interchange = mapSelectionContainer.transform.GetChild(14).gameObject; // Interchange map button
+            //streets = mapSelectionContainer.transform.GetChild(20).gameObject; // Streets map button
+            //shoreline = mapSelectionContainer.transform.GetChild(19).gameObject; // Shoreline map button
+            //lighthouse = mapSelectionContainer.transform.GetChild(16).gameObject; // Lighthouse map button
+            //reserve = mapSelectionContainer.transform.GetChild(17).gameObject; // Reserve map button
+            //labs = mapSelectionContainer.transform.GetChild(15).gameObject; // Labs map button
+            //terminal = mapSelectionContainer.transform.GetChild(22).gameObject; // Labs map button
+
+            //if (getMapName(woods) != "woods")
+            //{
+            //    woods = mapSelectionContainer.transform.GetChild(22).gameObject; // Woods map button
+            //    terminal = mapSelectionContainer.transform.GetChild(21).gameObject; // Labs map button
+            //    Plugin.Instance.Log.LogInfo("[PMA] First woods mapping is wrong, fixing!");
+            //}    
             setLocationList();
         }
 

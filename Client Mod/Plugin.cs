@@ -13,7 +13,7 @@ using UnityEngine.SceneManagement;
 
 namespace ProgressiveMapAccess
 {
-    [BepInPlugin("ProgressiveMapAccess", "ProgressiveMapAccess", "1.4.0")]
+    [BepInPlugin("ProgressiveMapAccess", "ProgressiveMapAccess", "1.5.0")]
     [BepInDependency("com.SPT.core", "3.11.0")]
     public class Plugin : BaseUnityPlugin
     {

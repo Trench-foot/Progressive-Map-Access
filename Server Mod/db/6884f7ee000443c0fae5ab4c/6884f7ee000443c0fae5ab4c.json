@@ -1,0 +1,16 @@
+{
+  "userID": "6884f7ee000443c0fae5ab4c",
+  "allMapsUnlocked": false,
+  "Maps": {
+    "groundZero": false,
+    "customs": false,
+    "factory": true,
+    "woods": false,
+    "interChange": false,
+    "streets": true,
+    "shoreLine": false,
+    "lightHouse": false,
+    "reserve": false,
+    "labs": false
+  }
+}
